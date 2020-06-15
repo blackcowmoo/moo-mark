@@ -1,0 +1,15 @@
+name: moo-mark
+version: 0.0.1
+# description:
+# keywords:
+#   -
+# home: https://github.com/blackcowmoo/moo-mark
+# sources:
+#   - https://github.com/blackcowmoo/moo-mark
+maintainers:
+  - name: micalgenus
+    email: micalgenus@gmail.com
+    url: https://micalgenus.github.io/
+# icon:
+appVersion: 0.0.1
+# tillerVersion:

@@ -1,0 +1,70 @@
+language: node_js
+node_js:
+  - '12'
+
+cache:
+  npm: true
+  yarn: true
+  directories:
+    - $HOME/.helm
+    - $HOME/google-cloud-sdk
+
+# services:
+#   - docker
+
+branches:
+  only:
+    - master
+
+env:
+  global:
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1
+    - GOOGLE_APPLICATION_CREDENTIALS="$PWD/gcloud.key.json"
+
+before_install:
+  # Create gcloud credential file
+  - openssl aes-256-cbc -K $GCS_AES_KEY -iv $GCS_AES_IV -in gcloud.key.json.enc -out gcloud.key.json -d
+
+  - | # Install Helm
+    if [ ! -d "$HOME/.helm/bin" ]; then
+      rm -rf "$HOME/.helm"
+      wget https://get.helm.sh/helm-v2.16.1-linux-amd64.tar.gz
+      tar xf helm-v2.16.1-linux-amd64.tar.gz
+      mkdir -p $HOME/.helm/bin
+      mv linux-amd64/* $HOME/.helm/bin
+      $HOME/.helm/bin/helm init --client-only
+      $HOME/.helm/bin/helm plugin install https://github.com/hayorov/helm-gcs
+    fi
+  - export PATH=$PATH:$HOME/.helm/bin
+
+  # Install Google Cloud SDK
+  - if [ ! -d "$HOME/google-cloud-sdk/bin" ]; then rm -rf "$HOME/google-cloud-sdk"; curl https://sdk.cloud.google.com | bash > /dev/null; fi
+  - source $HOME/google-cloud-sdk/path.bash.inc
+
+install:
+  - helm repo add micalgenus-gcs gs://micalgenus/chart
+
+before_script:
+  - mv helm moo-mark
+
+script:
+  - helm package moo-mark
+  # - docker build -t $DOCKER_USERNAME/moo-mark .
+
+before_deploy:
+  - mkdir -p $HOME/.config/helm && cp $HOME/.helm/repository/repositories.yaml $HOME/.config/helm/repositories.yaml
+
+deploy:
+  - provider: script
+    script: helm gcs push moo-mark*.tgz micalgenus-gcs --force --public --publicUrl https://chart.micalgenus.com/
+    skip_cleanup: true
+    on:
+      branch: master
+  # - provider: script
+  #   script: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && docker push $DOCKER_USERNAME/moo-mark && docker logout
+  #   skip_cleanup: true
+  #   on:
+  #     branch: master
+
+# after_deploy:
+#   - curl -X POST $JENKINS_TRIGGER_URL?token=$JENKINS_TRIGGER_TOKEN --user $JENKINS_USER:$JEKNINS_USER_TOKEN
