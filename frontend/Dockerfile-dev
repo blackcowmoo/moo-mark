@@ -1,0 +1,11 @@
+FROM node:12
+
+COPY . /node
+WORKDIR /node
+
+RUN yarn
+
+EXPOSE 3000
+STOPSIGNAL SIGINT
+
+CMD yarn start
