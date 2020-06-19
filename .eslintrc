@@ -1,0 +1,19 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "extends": [
+    // Airbnb style guide 적용
+    "airbnb-base",
+    // TypeScript ESLint recommanded style 적용
+    "plugin:@typescript-eslint/eslint-recommended"
+  ],
+  "rules": {
+    "max-len": ["error", { "code": 160 }],
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error"],
+    "import/no-extraneous-dependencies": ["error", { "bundledDependencies": false }],
+    "import/extensions": ["error", "ignorePackages", { "js": "never", "jsx": "never", "ts": "never", "tsx": "never", "json": "never" }],
+    "import/prefer-default-export": ["off"],
+    "no-restricted-syntax": ["off"]
+  }
+}

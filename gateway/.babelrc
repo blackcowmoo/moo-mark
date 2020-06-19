@@ -1,0 +1,6 @@
+{
+  "presets": ["@babel/typescript", ["@babel/env", { "targets": { "node": "12" } }]],
+  "plugins": [["module-resolver", { "root": ["./src"], "alias": { "@": "./src" } }], "@babel/plugin-proposal-nullish-coalescing-operator"],
+  "sourceMaps": true,
+  "comments": false
+}
