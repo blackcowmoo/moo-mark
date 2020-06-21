@@ -1,5 +1,15 @@
 {
+  "name": "moomark",
+  "version": "0.0.1",
   "license": "MIT",
+  "scripts": {
+    "docker-build:frontend": "cd frontend && docker build -t $DOCKER_ORGANIZATION/moo-mark:frontend-$npm_package_version .",
+    "docker-build:gateway": "cd gateway && docker build -t $DOCKER_ORGANIZATION/moo-mark:gateway-$npm_package_version .",
+    "docker-build": "yarn docker-build:frontend && yarn docker-build:gateway",
+    "docker-push:frontend": "docker push $DOCKER_ORGANIZATION/moo-mark:frontend-$npm_package_version",
+    "docker-push:gateway": "docker push $DOCKER_ORGANIZATION/moo-mark:gateway-$npm_package_version",
+    "docker-push": "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && yarn docker-push:frontend && yarn docker-push:gateway && docker logout"
+  },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^3.3.0",
     "@typescript-eslint/parser": "^3.3.0",

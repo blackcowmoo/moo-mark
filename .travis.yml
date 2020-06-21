@@ -9,21 +9,21 @@ cache:
     - $HOME/.helm
     - $HOME/google-cloud-sdk
 
-# services:
-#   - docker
+services:
+  - docker
 
 branches:
   only:
-    - master
+    - develop
 
 env:
   global:
     - CLOUDSDK_CORE_DISABLE_PROMPTS=1
-    - GOOGLE_APPLICATION_CREDENTIALS="$PWD/gcloud.key.json"
+    - GOOGLE_APPLICATION_CREDENTIALS="$PWD/helm.gcloud.key.json"
 
 before_install:
   # Create gcloud credential file
-  - openssl aes-256-cbc -K $GCS_AES_KEY -iv $GCS_AES_IV -in gcloud.key.json.enc -out gcloud.key.json -d
+  - openssl aes-256-cbc -K $HELM_GCS_AES_KEY -iv $HELM_GCS_AES_IV -in helm.gcloud.key.json.enc -out helm.gcloud.key.json -d
 
   - | # Install Helm
     if [ ! -d "$HOME/.helm/bin" ]; then
@@ -49,7 +49,7 @@ before_script:
 
 script:
   - helm package moo-mark
-  # - docker build -t $DOCKER_USERNAME/moo-mark .
+  - yarn docker-build
 
 before_deploy:
   - mkdir -p $HOME/.config/helm && cp $HOME/.helm/repository/repositories.yaml $HOME/.config/helm/repositories.yaml
@@ -59,12 +59,12 @@ deploy:
     script: helm gcs push moo-mark*.tgz micalgenus-gcs --force --public --publicUrl https://chart.micalgenus.com/
     skip_cleanup: true
     on:
-      branch: master
-  # - provider: script
-  #   script: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && docker push $DOCKER_USERNAME/moo-mark && docker logout
-  #   skip_cleanup: true
-  #   on:
-  #     branch: master
+      branch: develop
+  - provider: script
+    script: yarn docker-push
+    skip_cleanup: true
+    on:
+      branch: develop
 
 # after_deploy:
 #   - curl -X POST $JENKINS_TRIGGER_URL?token=$JENKINS_TRIGGER_TOKEN --user $JENKINS_USER:$JEKNINS_USER_TOKEN
