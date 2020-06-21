@@ -1,2 +1,5 @@
-console.log('test');
-export default true;
+import app from './app';
+
+app.listen(7000, () => {
+  console.log('Start API Gateway');
+});

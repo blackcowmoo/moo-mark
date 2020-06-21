@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 services:
   frontend:
     build:
@@ -10,4 +10,14 @@ services:
     volumes:
       - ./frontend:/node
     command: bash -c 'yarn && yarn start'
+    tty: true
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile-dev
+    ports:
+      - 7000:7000
+    volumes:
+      - ./gateway:/node
+    command: bash -c 'yarn && yarn dev'
     tty: true
