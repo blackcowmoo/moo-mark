@@ -1,0 +1,51 @@
+name: github-actions/pull-request/frontend/build
+on:
+  pull_request:
+    branches:
+      - develop
+
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: ./node_modules
+          key: node-${{ hashFiles('yarn.lock') }}
+          restore-keys: node-
+
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: ./frontend/node_modules
+          key: frontend-node-${{ hashFiles('yarn.lock') }}
+          restore-keys: frontend-node-
+
+      - name: Install global packages
+        run: yarn
+
+      - name: Install packages
+        working-directory: frontend
+        run: yarn
+
+      - name: Run build
+        working-directory: frontend
+        run: yarn build
+
+      - name: Run test
+        working-directory: frontend
+        run: yarn test
+        env:
+          CI: true

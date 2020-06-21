@@ -1,0 +1,49 @@
+name: github-actions/pull-request/gateway/lint
+on:
+  pull_request:
+    branches:
+      - develop
+
+  push:
+    branches:
+      - develop
+
+jobs:
+  lint:
+    name: Lint and Type check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: ./node_modules
+          key: node-${{ hashFiles('yarn.lock') }}
+          restore-keys: node-
+
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: ./gateway/node_modules
+          key: gateway-node-${{ hashFiles('yarn.lock') }}
+          restore-keys: gateway-node-
+
+      - name: Install global packages
+        run: yarn
+
+      - name: Install packages
+        working-directory: gateway
+        run: yarn
+
+      - name: Run syntax check
+        working-directory: gateway
+        run: yarn type-check
+
+      - name: Run lint
+        working-directory: gateway
+        run: yarn lint
