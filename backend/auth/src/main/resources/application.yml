@@ -1,0 +1,21 @@
+spring:
+  devtools:
+    livereload:
+      enabled:
+        true
+  
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        formay_sql: true
+
+  profiles:
+    include:
+    - secret
+
+  session:
+    store-type: redis

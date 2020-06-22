@@ -11,6 +11,21 @@ services:
       - ./frontend:/node
     command: bash -c 'yarn && yarn start'
     tty: true
+  backend-redis:
+    image: redis:6
+    ports:
+      - 6379:6379
+  backend-auth-mysql:
+    image: mysql:8
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_DATABASE=moomark-auth
+      - MYSQL_USER=moomark
+      - MYSQL_PASSWORD=1q2w3e4r
+      - MYSQL_ROOT_PASSWORD=1q2w3e4r
+    volumes:
+      - backend-auth-mysql-volume:/var/lib/mysql
   gateway:
     build:
       context: ./gateway
@@ -21,3 +36,6 @@ services:
       - ./gateway:/node
     command: bash -c 'yarn && yarn dev'
     tty: true
+
+volumes:
+  backend-auth-mysql-volume:
