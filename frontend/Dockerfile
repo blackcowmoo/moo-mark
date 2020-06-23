@@ -9,14 +9,12 @@ RUN yarn && yarn build
 FROM node:12-alpine
 
 COPY . /node
-COPY --from=builder /node/build /node/build
+COPY --from=builder /node/.next /node/.next
 
 WORKDIR /node
+RUN yarn --production
 
-RUN yarn global add serve
-
-EXPOSE 5000
+EXPOSE 3000
 STOPSIGNAL SIGINT
 
-ENTRYPOINT serve -s
-CMD build
+ENTRYPOINT yarn start

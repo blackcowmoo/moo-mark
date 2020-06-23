@@ -6,11 +6,9 @@ services:
       dockerfile: Dockerfile-dev
     ports:
       - 3000:3000
-      - 3001:3001
     volumes:
       - ./frontend:/node
-    command: bash -c 'yarn && yarn start'
-    tty: true
+    command: bash -c 'yarn && yarn dev'
   backend-redis:
     image: redis:6
     ports:

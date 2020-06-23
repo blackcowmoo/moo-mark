@@ -40,9 +40,9 @@ jobs:
         working-directory: frontend
         run: yarn
 
-      # - name: Run syntax check
-      #   working-directory: frontend
-      #   run: yarn type-check
+      - name: Run syntax check
+        working-directory: frontend
+        run: yarn type-check
 
       - name: Run lint
         working-directory: frontend
