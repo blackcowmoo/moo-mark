@@ -13,10 +13,16 @@ jobs:
     name: Build and Test
     runs-on: ubuntu-latest
     env:
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      REDIS_HOST: localhost
+      REDIS_PORT: 6379
+      REDIS_PASSWORD:
       MYSQL_USERNAME: moomark
       MYSQL_PASSWORD: 1q2w3e4r
-      MYSQL_URL: jdbc:mysql://localhost:3306/moomark-auth?serverTimezone=UTC&characterEncoding=UTF-8
-      REDIS_PASSWORD:
+      MYSQL_HOSTNAME: localhost
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: moomark-auth
 
     services:
       redis:

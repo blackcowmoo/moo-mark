@@ -24,6 +24,29 @@ services:
       - MYSQL_ROOT_PASSWORD=1q2w3e4r
     volumes:
       - backend-auth-mysql-volume:/var/lib/mysql
+  backend-auth:
+    build:
+      context: ./backend/auth
+      dockerfile: Dockerfile-dev
+    command: bash -c './gradlew build --continuous & ./gradlew bootRun'
+    ports:
+      - 8080:8080
+    volumes:
+      - ./backend/auth:/spring
+    depends_on:
+      - backend-auth-mysql
+      - backend-redis
+    env_file:
+      - .env
+    environment:
+      REDIS_HOST: backend-redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ''
+      MYSQL_HOSTNAME: backend-auth-mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: moomark-auth
+      MYSQL_USERNAME: moomark
+      MYSQL_PASSWORD: 1q2w3e4r
   gateway:
     build:
       context: ./gateway
