@@ -1,4 +1,4 @@
-package com.blackcowmoo.moomark.web;
+package com.blackcowmoo.moomark.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -22,8 +22,8 @@ public class HelloControllerTest {
   private MockMvc mockMvc;
 
   @Test
-  public void sayHello() throws Exception {
-    String hello = "hello";
-    mockMvc.perform(get("/hello")).andExpect(status().isOk()).andExpect(content().string(hello));
+  public void indexPageTest() throws Exception {
+    String text = "hello MooMarkAuthServer";
+    mockMvc.perform(get("/")).andExpect(status().isOk()).andExpect(content().string(text));
   }
 }

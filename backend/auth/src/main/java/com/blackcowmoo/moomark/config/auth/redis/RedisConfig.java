@@ -1,6 +1,6 @@
 package com.blackcowmoo.moomark.config.auth.redis;
 
-import com.blackcowmoo.moomark.model.User;
+import com.blackcowmoo.moomark.model.entity.User;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

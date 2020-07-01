@@ -5,7 +5,7 @@ build/
 !**/src/main/**
 !**/src/test/**
 google-key.json
-application-secret.yml.bak
+application-local.yml
 ### STS ###
 .apt_generated
 .classpath

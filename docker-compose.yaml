@@ -9,10 +9,12 @@ services:
     volumes:
       - ./frontend:/node
     command: bash -c 'yarn && yarn dev'
+
   backend-redis:
     image: redis:6
     ports:
       - 6379:6379
+
   backend-auth-mysql:
     image: mysql:8
     ports:
@@ -24,11 +26,13 @@ services:
       - MYSQL_ROOT_PASSWORD=1q2w3e4r
     volumes:
       - backend-auth-mysql-volume:/var/lib/mysql
+
   backend-auth:
     build:
       context: ./backend/auth
       dockerfile: Dockerfile-dev
     command: bash -c './gradlew build --continuous & ./gradlew bootRun'
+    restart: always
     ports:
       - 8080:8080
     volumes:
@@ -47,6 +51,7 @@ services:
       MYSQL_DATABASE: moomark-auth
       MYSQL_USERNAME: moomark
       MYSQL_PASSWORD: 1q2w3e4r
+
   gateway:
     build:
       context: ./gateway

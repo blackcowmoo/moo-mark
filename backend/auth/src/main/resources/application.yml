@@ -8,7 +8,7 @@ spring:
     show-sql: true
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         formay_sql: true
@@ -19,3 +19,10 @@ spring:
 
   session:
     store-type: redis
+  
+logging:
+  level:
+    root:
+      DEBUG
+
+
