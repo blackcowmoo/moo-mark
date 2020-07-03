@@ -5,8 +5,10 @@ import java.io.Serializable;
 import com.blackcowmoo.moomark.model.entity.User;
 
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 public class SessionUser implements Serializable {
   private static final long serialVersionUID = 1L;
   private long id;
@@ -21,12 +23,6 @@ public class SessionUser implements Serializable {
     this.email = user.getEmail();
     this.picture = user.getPicture();
     this.nickname = user.getNickname();
-  }
-
-  @Override
-  public String toString() {
-    return "SessionUser [email=" + email + ", id=" + id + ", name=" + name + ", nickname=" + nickname + ", picture="
-        + picture + "]";
   }
 
 }

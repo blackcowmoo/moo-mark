@@ -24,7 +24,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.session:spring-session-data-redis'
 	implementation 'mysql:mysql-connector-java'
-
+  implementation 'org.modelmapper:modelmapper:2.3.8'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test' 
   testImplementation 'org.springframework.security:spring-security-test'

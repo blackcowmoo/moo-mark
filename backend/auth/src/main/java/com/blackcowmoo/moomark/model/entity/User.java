@@ -10,7 +10,6 @@ import javax.persistence.Id;
 
 import com.blackcowmoo.moomark.model.AuthProvider;
 import com.blackcowmoo.moomark.model.Role;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +18,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class User {
 
   @Id

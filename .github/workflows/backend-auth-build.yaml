@@ -15,6 +15,8 @@ jobs:
     env:
       GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
       GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      G4B_CLIENT_ID: ${{ secrets.G4B_CLIENT_ID }}
+      G4B_CLIENT_SECRET: ${{ secrets.G4B_CLIENT_SECRET }}
       REDIS_HOST: localhost
       REDIS_PORT: 6379
       REDIS_PASSWORD:
