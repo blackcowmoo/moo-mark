@@ -10,6 +10,11 @@ services:
       - ./frontend:/node
     command: bash -c 'yarn && yarn dev'
 
+  backend-rabbitmq:
+    image: rabbitmq:3
+    ports:
+      - 5672
+
   backend-redis:
     image: redis:6
     ports:
