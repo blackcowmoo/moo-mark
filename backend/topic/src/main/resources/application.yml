@@ -1,0 +1,28 @@
+server:
+  port: 8081
+
+spring:
+  devtools:
+    livereload:
+      enabled:
+        true
+    
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+  profiles:
+    include:
+    - secret
+
+logging:
+  level:
+    root:
+      DEBUG
+
+
