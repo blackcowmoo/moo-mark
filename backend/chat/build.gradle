@@ -33,14 +33,16 @@ test {
 	useJUnitPlatform()
 }
 
+apply plugin: 'checkstyle'
+
 checkstyle {
-        toolVersion = "8.26"
-        configFile = file("../../checkstyle.xml") // 1.1.2 에서 작성한 checkstyle 파일 지정
-        reportsDir = file("${buildDir}/checkstyle-output") // 리포트 파일이 위치할 디렉토리 지정
+  toolVersion = "8.26"
+  configFile = file("../../checkstyle.xml") // 1.1.2 에서 작성한 checkstyle 파일 지정
+  reportsDir = file("${buildDir}/checkstyle-output") // 리포트 파일이 위치할 디렉토리 지정
 }
 
 checkstyleMain {
-        reports {
-                xml.destination = file("${checkstyle.reportsDir}/checkstyle-report.xml") // 리포트 파일의 위치 및 파일명 지정
-        }
+  reports {
+    xml.destination = file("${checkstyle.reportsDir}/checkstyle-report.xml") // 리포트 파일의 위치 및 파일명 지정
+  }
 }
