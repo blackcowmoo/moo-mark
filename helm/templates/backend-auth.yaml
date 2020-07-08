@@ -75,10 +75,6 @@ spec:
               port: 8080
             initialDelaySeconds: 300
             periodSeconds: 5
-          resources:
-            limits:
-              cpu: "2000m"
-              memory: "2.5Gi"
 
 {{- if .Values.backend.auth.service.enabled }}
 ---
