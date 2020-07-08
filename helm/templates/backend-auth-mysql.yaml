@@ -1,0 +1,49 @@
+{{- if .Values.test.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-auth-mysql-deployment
+  labels:
+    app: moomark
+    service: backend-auth-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: moomark
+      service: backend-auth-mysql
+  template:
+    metadata:
+      labels:
+        app: moomark
+        service: backend-auth-mysql
+    spec:
+      containers:
+        - name: backend-auth-mysql
+          image: mysql:8
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_DATABASE
+              value: {{ .Values.backend.auth.mysql.database }}
+            - name: MYSQL_USER
+              value: {{ .Values.backend.auth.mysql.username }}
+            - name: MYSQL_PASSWORD
+              value: {{ .Values.backend.auth.mysql.password }}
+            - name: MYSQL_ROOT_PASSWORD
+              value: {{ .Values.backend.auth.mysql.password }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-auth-mysql
+spec:
+  selector:
+    app: moomark
+    service: backend-auth-mysql
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+{{- end -}}
