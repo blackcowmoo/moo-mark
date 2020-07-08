@@ -1,0 +1,127 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-auth-deployment
+  labels:
+    app: moomark
+    service: backend-auth
+spec:
+  replicas: {{ .Values.backend.auth.deployment.replicas }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 100%
+      maxUnavailable: 100%
+  selector:
+    matchLabels:
+      app: moomark
+      service: backend-auth
+  template:
+    metadata:
+      labels:
+        app: moomark
+        service: backend-auth
+    spec:
+      containers:
+        - name: backend-auth
+        {{ if .Values.backend.auth.deployment.file.url }}
+          image: blackcowmoo/moo-mark:backend-auth-dev
+          command: ["bash", "-c", "curl $JAR_FILE_URL -o $JAR_FILE_NAME -s && java -jar $JAR_FILE_NAME"]
+        {{ else }}
+          {{ $defaultImage := printf "blackcowmoo/moo-mark:backend-auth-%s" .Chart.AppVersion }}
+          image: {{ .Values.backend.auth.deployment.image | default $defaultImage | quote }}
+          imagePullPolicy: Always
+        {{ end }}
+          ports:
+            - containerPort: 8080
+          env:
+          {{ if .Values.test.enabled }}
+            - name: MYSQL_HOSTNAME
+              value: backend-auth-mysql.{{ .Release.Namespace }}.svc.cluster.local
+            - name: REDIS_HOST
+              value: backend-redis.{{ .Release.Namespace }}.svc.cluster.local
+          {{ else }}
+            - name: MYSQL_HOSTNAME
+              value: {{ .Values.backend.auth.mysql.hostname | quote }}
+            - name: REDIS_HOST
+              value: {{ .Values.backend.redis.host | quote }}
+          {{ end }}
+            - name: MYSQL_PORT
+              value: {{ .Values.backend.auth.mysql.port | quote }}
+            - name: MYSQL_DATABASE
+              value: {{ .Values.backend.auth.mysql.database | quote }}
+            - name: MYSQL_USERNAME
+              value: {{ .Values.backend.auth.mysql.username | quote }}
+            - name: MYSQL_PASSWORD
+              value: {{ .Values.backend.auth.mysql.password | quote }}
+            - name: MYSQL_ROOT_PASSWORD
+              value: {{ .Values.backend.auth.mysql.password | quote }}
+            - name: GOOGLE_CLIENT_ID
+              value: {{ .Values.backend.auth.oauth.google.id | quote }}
+            - name: GOOGLE_CLIENT_SECRET
+              value: {{ .Values.backend.auth.oauth.google.secret | quote }}
+            - name: REDIS_PORT
+              value: {{ .Values.backend.redis.port | quote }}
+            - name: REDIS_PASSWORD
+              value: {{ .Values.backend.redis.password | quote }}
+            - name: JAR_FILE_NAME
+              value: {{ .Values.backend.auth.deployment.file.name | quote }}
+            - name: JAR_FILE_URL
+              value: {{ .Values.backend.auth.deployment.file.url | quote }}
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 300
+            periodSeconds: 5
+
+{{- if .Values.backend.auth.service.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-auth
+spec:
+  selector:
+    app: moomark
+    service: backend-auth
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+{{- end -}}
+
+{{- if and .Values.backend.auth.istio.enabled .Values.backend.auth.istio.host }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: backend-auth-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - {{ .Values.backend.auth.istio.host }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: backend-auth
+spec:
+  hosts:
+  - {{ .Values.backend.auth.istio.host }}
+  gateways:
+  - backend-auth-gateway
+  http:
+  - route:
+    - destination:
+        host: backend-auth
+        port:
+          number: 80
+{{- end -}}

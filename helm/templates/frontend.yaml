@@ -1,0 +1,109 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  labels:
+    app: moomark
+    service: frontend
+spec:
+  replicas: {{ .Values.frontend.deployment.replicas }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 100%
+      maxUnavailable: 100%
+  selector:
+    matchLabels:
+      app: moomark
+      service: frontend
+  template:
+    metadata:
+      labels:
+        app: moomark
+        service: frontend
+    spec:
+      containers:
+        - name: frontend
+        {{ if .Values.frontend.deployment.local.file }}
+          image: blackcowmoo/moo-mark:frontend-dev
+          command: ["bash", "-c", "rm -rf /node && mkdir /node && cat /node-source/source.tar.base64 | base64 --decode > /source.tar && tar xf /source.tar -C /node && cd /node/frontend && yarn && yarn dev"]
+        {{ else }}
+          {{ $defaultImage := printf "blackcowmoo/moo-mark:frontend-%s" .Chart.AppVersion }}
+          image: {{ .Values.frontend.deployment.image | default $defaultImage | quote }}
+          imagePullPolicy: Always
+        {{ end }}
+          ports:
+            - containerPort: 3000
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 20
+            periodSeconds: 3
+          volumeMounts:
+          - name: frontend-source
+            mountPath: /node-source
+      volumes:
+        - name: frontend-source
+          configMap:
+            name: frontend-source
+
+{{- if .Values.frontend.service.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+spec:
+  selector:
+    app: moomark
+    service: frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+{{- end -}}
+
+{{- if and .Values.frontend.istio.enabled .Values.frontend.istio.host }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: frontend-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - {{ .Values.frontend.istio.host }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: frontend
+spec:
+  hosts:
+  - {{ .Values.frontend.istio.host }}
+  gateways:
+  - frontend-gateway
+  http:
+  - route:
+    - destination:
+        host: frontend
+        port:
+          number: 80
+{{- end -}}
+
+{{- if .Values.frontend.deployment.local.file }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-source
+data:
+  source.tar.base64: {{ .Files.Get .Values.frontend.deployment.local.file | b64enc }}
+{{- end -}}

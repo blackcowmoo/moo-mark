@@ -1,0 +1,37 @@
+name: github-actions/pull-request/helm/lint
+on:
+  pull_request:
+    branches:
+      - develop
+
+  push:
+    branches:
+      - develop
+
+jobs:
+  lint:
+    name: Lint and Type check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache helm
+        uses: actions/cache@v1
+        with:
+          path: $HOME/.helm
+          key: helm-2.16.1
+          restore-keys: helm-
+
+      - name: Install helm
+        run: |
+          if [ ! -d "$HOME/.helm/bin" ]; then
+            rm -rf "$HOME/.helm"
+            wget https://get.helm.sh/helm-v2.16.1-linux-amd64.tar.gz
+            tar xf helm-v2.16.1-linux-amd64.tar.gz
+            mkdir -p $HOME/.helm/bin
+            mv linux-amd64/* $HOME/.helm/bin
+            $HOME/.helm/bin/helm init --client-only
+          fi
+
+      - name: Lint helm
+        run: mv helm moo-mark && helm lint ./moo-mark

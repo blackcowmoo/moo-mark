@@ -1,0 +1,53 @@
+test:
+  enabled: true
+
+frontend:
+  deployment:
+    replicas: 3
+    # image:
+    local:
+      file: ''
+  service:
+    enabled: true
+  istio:
+    enabled: false
+    # host: "moomark.com"
+
+gateway:
+  deployment:
+    replicas: 3
+    # image:
+    local:
+      file: ''
+  service:
+    enabled: true
+  istio:
+    enabled: false
+    # host: "moomark.com"
+
+backend:
+  redis:
+    host: localhost
+    port: 6379
+    password: ''
+  auth:
+    deployment:
+      replicas: 3
+      # image:
+      file:
+        name: ''
+        url: ''
+    service:
+      enabled: true
+    istio:
+      enabled: false
+    mysql:
+      hostname: localhost
+      port: 3306
+      database: auth
+      username: moomark
+      password: 1q2w3e4r
+    oauth:
+      google:
+        id: ''
+        secret: ''
