@@ -1,0 +1,10 @@
+spring:
+  profiles:
+    include:
+    - core
+    active: development
+  security:
+    user:
+      name: moomark
+      password: moomark
+      roles: GUEST

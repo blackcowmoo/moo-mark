@@ -48,3 +48,12 @@ checkstyleMain {
 		xml.destination = file("${checkstyle.reportsDir}/checkstyle-report.xml") // 리포트 파일의 위치 및 파일명 지정
 	}
 }
+
+ext.profile = (!project.hasProperty('profile') || !profile) ? 'development' : profile
+sourceSets {
+  main {
+   resources {     
+    srcDirs "src/main/resources", "src/main/resources-env/${profile}"
+   }
+  }
+}

@@ -7,8 +7,9 @@ import javax.servlet.http.HttpSession;
 import com.blackcowmoo.moomark.auth.model.AuthProvider;
 import com.blackcowmoo.moomark.auth.model.dto.SessionUser;
 import com.blackcowmoo.moomark.auth.model.entity.User;
-import com.blackcowmoo.moomark.auth.repository.UserRepository;
+import com.blackcowmoo.moomark.auth.service.OAuhUserServiceImpl;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -22,8 +23,9 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
+@Profile("production")
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
-  private final UserRepository userRepository;
+  private final OAuhUserServiceImpl userService;
   private final HttpSession httpSession;
 
   @Override
@@ -47,9 +49,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
   }
 
   private User saveOrUpdate(OAuthAttributes attributes) {
-    User user = userRepository.findByEmailAndAuthProvider(attributes.getEmail(), attributes.getAuthProvider())
-        .map(entity -> entity.update(attributes.getName(), attributes.getPicture())).orElse(attributes.toEntity());
-
-    return userRepository.save(user);
+    return userService.loginOrSignUp(attributes.toEntity());
   }
 }
