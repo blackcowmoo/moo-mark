@@ -29,9 +29,6 @@ pipeline {
         sh "echo $BRANCH_NAME"
         sh "helm repo list"
         sh "helm ls $HELM_RELEASE_NAME"
-        sh '([ -z $(kubectl get ns "$HELM_RELEASE_NAME") ] || kubectl delete ns $HELM_RELEASE_NAME) && kubectl create ns $HELM_RELEASE_NAME'
-        sh "kubectl run --namespace $HELM_RELEASE_NAME --image sickp/alpine-sshd ${HELM_RELEASE_NAME}-sshd"
-        sh "kubectl expose pod ${HELM_RELEASE_NAME}-sshd --namespace $HELM_RELEASE_NAME --port=22 --name=sshd"
       }
     }
 
