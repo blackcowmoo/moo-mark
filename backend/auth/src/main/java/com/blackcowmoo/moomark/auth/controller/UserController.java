@@ -42,4 +42,9 @@ public class UserController {
 
     return ResponseEntity.ok(userService.updateUserNickname(getSessionUserId(), nickname));
   }
+
+  @GetMapping(value = "/env")
+  public String getProfile() {
+    return userService.getEnv();
+  }
 }

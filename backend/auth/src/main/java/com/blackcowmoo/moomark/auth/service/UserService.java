@@ -1,32 +1,24 @@
 package com.blackcowmoo.moomark.auth.service;
 
+import java.util.Optional;
+
+import com.blackcowmoo.moomark.auth.model.AuthProvider;
 import com.blackcowmoo.moomark.auth.model.entity.User;
-import com.blackcowmoo.moomark.auth.repository.UserRepository;
+import com.blackcowmoo.moomark.auth.util.EnvironmentUtil;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+public interface UserService {
 
-import lombok.extern.log4j.Log4j2;
+  User getUserById(long id);
 
-@Log4j2
-@Service
-public class UserService {
-  @Autowired
-  UserRepository userRepository;
+  boolean updateUserNickname(long userId, String nickname);
 
-  public User getUserById(long userId) {
-    return userRepository.getOne(userId);
-  }
+  void updateUser(User user);
 
-  public boolean updateUserNickname(long userId, String nickname) {
-    try {
-      User willUpdateUser = userRepository.getOne(userId);
-      willUpdateUser.updateNickname(nickname);
-      userRepository.save(willUpdateUser);
-    } catch (Exception e) {
-      log.error(e);
-      return false;
-    }
-    return true;
+  Optional<User> login(String email, String password, AuthProvider authProvider);
+
+  User signUp(User user);
+
+  default String getEnv() {
+    return EnvironmentUtil.getActiveProfile();
   }
 }

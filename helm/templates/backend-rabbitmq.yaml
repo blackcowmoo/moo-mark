@@ -1,0 +1,49 @@
+{{- if .Values.test.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-rabbitmq-deployment
+  labels:
+    app: moomark
+    service: backend-rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: moomark
+      service: backend-rabbitmq
+  template:
+    metadata:
+      labels:
+        app: moomark
+        service: backend-rabbitmq
+    spec:
+      containers:
+        - name: backend-rabbitmq
+          image: rabbitmq:3
+          imagePullPolicy: Always
+          command: ["bash", "-c", "rabbitmq-plugins enable rabbitmq_stomp && rabbitmq-server"]
+          ports:
+            - name: server
+              containerPort: 5672
+            - name: stomp
+              containerPort: 61613
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-rabbitmq
+spec:
+  selector:
+    app: moomark
+    service: backend-rabbitmq
+  ports:
+    - name: server
+      protocol: TCP
+      port: 5672
+      targetPort: 5672
+    - name: stomp
+      protocol: TCP
+      port: 61613
+      targetPort: 61613
+{{- end -}}

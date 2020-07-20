@@ -1,0 +1,24 @@
+name: github-actions/pull-request/docker/build
+on:
+  pull_request:
+    branches:
+      - develop
+
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    name: Build docker image
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        directory: ['frontend', 'gateway', 'backend/auth']
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build docker
+        run: docker build -t test ./
+        working-directory: ${{ matrix.directory }}

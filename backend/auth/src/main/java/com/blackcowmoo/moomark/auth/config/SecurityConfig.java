@@ -2,6 +2,8 @@ package com.blackcowmoo.moomark.auth.config;
 
 import com.blackcowmoo.moomark.auth.model.Role;
 
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -10,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
+@Configuration
+@Profile({ "production", "default" })
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   private final CustomOAuth2UserService customOAuth2UserService;
