@@ -19,7 +19,8 @@ pipeline {
                   --set gateway.deployment.local.file=gateway.tar \
                   --set backend.auth.istio.enabled=true \
                   --set backend.auth.istio.host=${HELM_RELEASE_NAME}-backend-auth.kubernetes.micalgenus.com \
-                  --set backend.auth.deployment.replicas=1"
+                  --set backend.auth.deployment.replicas=1 \
+                  --set test.rabbitmq.istio.host=${HELM_RELEASE_NAME}-backend-rabbitmq.kubernetes.micalgenus.com"
   }
 
   stages {
@@ -103,6 +104,7 @@ pipeline {
       script {
         FRONTEND_URL="http://${HELM_RELEASE_NAME}.kubernetes.micalgenus.com/"
         GATEWAY_URL="http://${HELM_RELEASE_NAME}-gateway.kubernetes.micalgenus.com/"
+        BACKEND_RABBITMQ_URL="http://${HELM_RELEASE_NAME}-backend-rabbitmq.kubernetes.micalgenus.com/"
         BACKEND_AUTH_URL="http://${HELM_RELEASE_NAME}-backend-auth.kubernetes.micalgenus.com/"
         for (comment in pullRequest.comments) {
           // Remove all comments by blackcowmooo
@@ -110,7 +112,7 @@ pipeline {
             pullRequest.deleteComment(comment.id)
           }
         }
-        pullRequest.comment("Frontend: ${FRONTEND_URL}\nGateway: ${GATEWAY_URL}\nBackend.Auth: ${BACKEND_AUTH_URL}\n")
+        pullRequest.comment("Frontend: ${FRONTEND_URL}\nGateway: ${GATEWAY_URL}\nBackend.RabbitMQ: ${BACKEND_RABBITMQ_URL}\nBackend.Auth: ${BACKEND_AUTH_URL}\n")
       }
     }
 

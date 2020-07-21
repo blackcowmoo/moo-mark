@@ -22,10 +22,12 @@ spec:
         - name: backend-rabbitmq
           image: rabbitmq:3
           imagePullPolicy: Always
-          command: ["bash", "-c", "rabbitmq-plugins enable rabbitmq_stomp && rabbitmq-server"]
+          command: ["bash", "-c", "(while [ -z \"`rabbitmqctl list_users 2>/dev/null`\" ]; do sleep 1; done ; rabbitmqctl add_user moomark moomark ; rabbitmqctl set_user_tags moomark administrator ; rabbitmqctl set_permissions -p / moomark  \".*\" \".*\" \".*\" ;) & rabbitmq-plugins enable rabbitmq_stomp && rabbitmq-plugins enable rabbitmq_management && rabbitmq-server"]
           ports:
             - name: server
               containerPort: 5672
+            - name: manage
+              containerPort: 15672
             - name: stomp
               containerPort: 61613
 ---
@@ -42,8 +44,47 @@ spec:
       protocol: TCP
       port: 5672
       targetPort: 5672
+    - name: manage
+      protocol: TCP
+      port: 15672
+      targetPort: 15672
     - name: stomp
       protocol: TCP
       port: 61613
       targetPort: 61613
+{{- end -}}
+
+
+{{- if and .Values.test.enabled .Values.test.rabbitmq.istio.host }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: backend-rabbitmq-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - {{ .Values.test.rabbitmq.istio.host }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: backend-rabbitmq
+spec:
+  hosts:
+  - {{ .Values.test.rabbitmq.istio.host }}
+  gateways:
+  - backend-rabbitmq-gateway
+  http:
+  - route:
+    - destination:
+        host: backend-rabbitmq
+        port:
+          number: 15672
 {{- end -}}

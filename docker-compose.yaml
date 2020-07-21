@@ -19,11 +19,15 @@ services:
     image: rabbitmq:3
     ports:
       - 5672:5672
+      - 15672:15672
       - 61613:61613
-    command: bash -c 'rabbitmq-plugins enable rabbitmq_stomp && rabbitmq-server'
-    healthcheck:
-      test: ['CMD', 'rabbitmqctl', 'list_users']
-      interval: 10s
+    command: |
+      bash -c '(
+        while [ -z "`rabbitmqctl list_users 2>/dev/null`" ]; do sleep 1; done ;
+        rabbitmqctl add_user moomark moomark ;
+        rabbitmqctl set_user_tags moomark administrator ;
+        rabbitmqctl set_permissions -p / moomark  ".*" ".*" ".*" ;
+      ) & rabbitmq-plugins enable rabbitmq_stomp && rabbitmq-plugins enable rabbitmq_management && rabbitmq-server'
 
   backend-auth-mysql:
     image: mysql:8
