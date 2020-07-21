@@ -1,0 +1,14 @@
+spring:
+  devtools:
+    livereload:
+      enabled:
+        true
+  
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    
+logging:
+  level:
+    root:
+      DEBUG

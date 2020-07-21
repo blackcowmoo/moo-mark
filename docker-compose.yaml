@@ -21,6 +21,9 @@ services:
       - 5672:5672
       - 61613:61613
     command: bash -c 'rabbitmq-plugins enable rabbitmq_stomp && rabbitmq-server'
+    healthcheck:
+      test: ['CMD', 'rabbitmqctl', 'list_users']
+      interval: 10s
 
   backend-auth-mysql:
     image: mysql:8
@@ -58,6 +61,22 @@ services:
       MYSQL_DATABASE: moomark-auth
       MYSQL_USERNAME: moomark
       MYSQL_PASSWORD: 1q2w3e4r
+
+  backend-notification:
+    build:
+      context: ./backend/notification
+      dockerfile: Dockerfile-dev
+    command: bash -c './gradlew build --continuous & ./gradlew bootRun'
+    restart: always
+    ports:
+      - 8081:8080
+    volumes:
+      - ./backend/notification:/spring
+    depends_on:
+      - backend-rabbitmq
+    environment:
+      RABBITMQ_HOST: backend-rabbitmq
+      RABBITMQ_PORT: 5672
 
   gateway:
     build:

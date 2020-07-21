@@ -1,0 +1,11 @@
+FROM openjdk:11
+
+COPY . /spring
+WORKDIR /spring
+
+RUN ./gradlew
+
+EXPOSE 8080
+STOPSIGNAL SIGINT
+
+CMD ./gradlew build --continuous & ./gradlew bootRun
