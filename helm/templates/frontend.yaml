@@ -40,6 +40,7 @@ spec:
               port: 3000
             initialDelaySeconds: 20
             periodSeconds: 3
+    {{ if .Values.frontend.deployment.local.file }}
           volumeMounts:
           - name: frontend-source
             mountPath: /node-source
@@ -47,6 +48,7 @@ spec:
         - name: frontend-source
           configMap:
             name: frontend-source
+    {{ end }}
 
 {{- if .Values.frontend.service.enabled }}
 ---

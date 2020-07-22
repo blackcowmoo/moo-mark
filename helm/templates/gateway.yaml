@@ -40,6 +40,7 @@ spec:
               port: 7000
             initialDelaySeconds: 20
             periodSeconds: 3
+    {{ if .Values.gateway.deployment.local.file }}
           volumeMounts:
           - name: gateway-source
             mountPath: /node-source
@@ -47,6 +48,7 @@ spec:
         - name: gateway-source
           configMap:
             name: gateway-source
+    {{ end }}
 
 {{- if .Values.gateway.service.enabled }}
 ---
