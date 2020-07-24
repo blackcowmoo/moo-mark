@@ -34,6 +34,17 @@ spec:
         {{ end }}
           ports:
             - containerPort: 7000
+          env:
+            - name: NODE_ENV
+          {{ if .Values.test.enabled }}
+              value: development 
+          {{ else }}
+              value: production
+          {{ end }}
+            - name: AUTH_SERVICE_HOST
+              value: backend-auth.{{ .Release.Namespace }}.svc.cluster.local
+            - name: AUTH_SERVICE_PORT
+              value: "80"
           livenessProbe:
             httpGet:
               path: /healthz

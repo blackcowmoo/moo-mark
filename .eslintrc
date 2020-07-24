@@ -15,6 +15,7 @@
     "import/extensions": ["error", "ignorePackages", { "js": "never", "jsx": "never", "ts": "never", "tsx": "never", "json": "never" }],
     "import/prefer-default-export": ["off"],
     "no-restricted-syntax": ["off"],
-    "no-param-reassign": ["off"]
+    "no-param-reassign": ["off"],
+    "object-curly-newline": ["off"]
   }
 }

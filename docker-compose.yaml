@@ -91,7 +91,10 @@ services:
     volumes:
       - ./gateway:/node
     command: bash -c 'yarn && yarn dev'
-    tty: true
+    environment:
+      - NODE_ENV=development
+      - AUTH_SERVICE_HOST=backend-auth
+      - AUTH_SERVICE_PORT=8080
 
 volumes:
   backend-auth-mysql-volume:
