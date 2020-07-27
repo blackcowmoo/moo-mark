@@ -3,7 +3,7 @@ import React, { PureComponent, Fragment } from 'react';
 import Layout from '../../components/Layout';
 import { GithubOutlined } from '@ant-design/icons';
 import { Button, Row, Input, Form } from 'antd';
-import './index.module.scss';
+import './index.scss';
 
 const FormItem = Form.Item;
 

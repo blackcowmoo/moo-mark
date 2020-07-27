@@ -3,9 +3,9 @@ import Link from 'next/link';
 import Head from 'next/head';
 
 type Props = {
-  children?: ReactNode
-  title?: string
-}
+  children?: ReactNode;
+  title?: string;
+};
 
 const Layout = ({ children, title = 'This is the default title' }: Props) => (
   <div>
@@ -20,8 +20,8 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => (
           <a>Home</a>
         </Link>{' '}
         |{' '}
-        <Link href="/about">
-          <a>About</a>
+        <Link href="/dashboard">
+          <a>dashboard</a>
         </Link>{' '}
         |{' '}
         <Link href="/users">
@@ -37,7 +37,7 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => (
     {children}
     <footer>
       <hr />
-      <span>I `&apos;` m here to stay (Footer)</span>
+      <span>dashboard</span>
     </footer>
   </div>
 );

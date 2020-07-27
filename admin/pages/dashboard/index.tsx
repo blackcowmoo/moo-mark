@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import React, { PureComponent } from 'react';
-import Layout from '../components/Layout'
+import Layout from '../../components/Layout'
 
 export default class IndexPage extends PureComponent{
   render(){
