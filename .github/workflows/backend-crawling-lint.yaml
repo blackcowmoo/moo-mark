@@ -25,5 +25,5 @@ jobs:
 
       - name: Run all check
         working-directory: backend/crawling
-        run: pylint **/*.py
+        run: pylint *.py **/*.py
 
