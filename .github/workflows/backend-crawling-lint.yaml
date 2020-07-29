@@ -21,7 +21,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: backend/crawling
-        run: pip install pylint
+        run: pip install -r requirements.txt
 
       - name: Run all check
         working-directory: backend/crawling
