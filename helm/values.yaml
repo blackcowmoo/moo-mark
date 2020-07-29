@@ -1,5 +1,8 @@
 test:
   enabled: false
+  redis:
+    istio:
+      host: ''
   rabbitmq:
     istio:
       host: ''

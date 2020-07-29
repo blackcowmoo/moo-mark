@@ -9,6 +9,7 @@ pipeline {
     HELM_RELEASE_NAME="${PROJECT_NAME}".replaceAll("PR", "pr")
     HELM_RELEASE_EXIST=sh(script: '[ -z $(helm ls ' + "${HELM_RELEASE_NAME}" + ' -a -q) ] && echo "false" || echo "true"', , returnStdout: true).trim()
     HELM_DEFAULT_OPTIONS="--set test.enabled=true \
+                  --set test.redis.istio.host=${HELM_RELEASE_NAME}-redis.kubernetes.micalgenus.com \
                   --set frontend.istio.enabled=true \
                   --set frontend.istio.host=${HELM_RELEASE_NAME}.kubernetes.micalgenus.com \
                   --set frontend.deployment.replicas=1 \
@@ -105,6 +106,7 @@ pipeline {
         FRONTEND_URL="http://${HELM_RELEASE_NAME}.kubernetes.micalgenus.com/"
         GATEWAY_URL="http://${HELM_RELEASE_NAME}-gateway.kubernetes.micalgenus.com/"
         GATEWAY_PLAYGROUND_URL="http://${HELM_RELEASE_NAME}-gateway.kubernetes.micalgenus.com/graphql"
+        BACKEND_REDIS_URL="http://${HELM_RELEASE_NAME}-redis.kubernetes.micalgenus.com/"
         BACKEND_RABBITMQ_URL="http://${HELM_RELEASE_NAME}-backend-rabbitmq.kubernetes.micalgenus.com/"
         BACKEND_AUTH_URL="http://${HELM_RELEASE_NAME}-backend-auth.kubernetes.micalgenus.com/"
         for (comment in pullRequest.comments) {
@@ -113,7 +115,7 @@ pipeline {
             pullRequest.deleteComment(comment.id)
           }
         }
-        pullRequest.comment("Frontend: ${FRONTEND_URL}\nGateway: ${GATEWAY_URL}\nGateway.playground: ${GATEWAY_PLAYGROUND_URL}\nBackend.RabbitMQ: ${BACKEND_RABBITMQ_URL}\nBackend.Auth: ${BACKEND_AUTH_URL}\n")
+        pullRequest.comment("Frontend: ${FRONTEND_URL}\nGateway: ${GATEWAY_URL}\nGateway.playground: ${GATEWAY_PLAYGROUND_URL}\nBackend.Redis: ${BACKEND_REDIS_URL}\nBackend.RabbitMQ: ${BACKEND_RABBITMQ_URL}\nBackend.Auth: ${BACKEND_AUTH_URL}\n")
       }
     }
 
