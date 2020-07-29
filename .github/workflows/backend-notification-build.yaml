@@ -15,7 +15,8 @@ jobs:
     env:
       RABBITMQ_HOST: localhost
       RABBITMQ_PORT: 5672
-
+      RABBITMQ_USERNAME: moomark
+      RABBITMQ_PASSWORD: moomark
     steps:
       - uses: actions/checkout@v2
 
@@ -27,7 +28,10 @@ jobs:
             --health-cmd "rabbitmq-diagnostics -q ping" \
             --health-start-period 1s \
             --health-interval 1s \
-            rabbitmq:3 bash -c 'rabbitmq-plugins enable rabbitmq_stomp && rabbitmq-server'
+            rabbitmq:3 bash -c '(rabbitmqctl add_user ${RABBITMQ_USERNAME} ${RABBITMQ_PASSWORD} ;
+            rabbitmqctl set_user_tags ${RABBITMQ_USERNAME} administrator ;
+            rabbitmqctl set_permissions -p / ${RABBITMQ_USERNAME}  ".*" ".*" ".*" ;
+            ) & rabbitmq-plugins enable rabbitmq_stomp && rabbitmq-plugins enable rabbitmq_management && rabbitmq-server'
 
       - uses: actions/setup-java@v1
         with:

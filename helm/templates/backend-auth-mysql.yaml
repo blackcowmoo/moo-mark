@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: backend-auth-mysql
-          image: mysql:8
+          image: mysql:8.0.20
           imagePullPolicy: Always
           ports:
             - containerPort: 3306
