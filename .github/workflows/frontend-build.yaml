@@ -12,6 +12,8 @@ jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
+    # env:
+    #   GRAPHQL_SERVER: http://gateway:7000/graphql
 
     steps:
       - uses: actions/checkout@v2

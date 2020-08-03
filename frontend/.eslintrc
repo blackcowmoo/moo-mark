@@ -1,31 +1,16 @@
 {
-  "extends": [
-    "../.eslintrc",
-    "plugin:react/recommended"
-  ],
-  "ignorePatterns": [
-    "dist/",
-    "build/"
-  ],
+  "extends": ["../.eslintrc", "plugin:react/recommended"],
+  "ignorePatterns": ["dist/", "build/"],
   "settings": {
     "import/resolver": {
       "alias": {
-        "map": [
-          [
-            "@",
-            "./"
-          ]
-        ],
-        "extensions": [
-          ".ts",
-          ".tsx",
-          ".js",
-          ".jsx"
-        ]
+        "map": [["@", "./"]],
+        "extensions": [".ts", ".tsx", ".js", ".jsx"]
       }
     }
   },
   "rules": {
-    "react/react-in-jsx-scope": "off"
+    "react/prop-types": ["off"],
+    "react/react-in-jsx-scope": ["off"]
   }
 }

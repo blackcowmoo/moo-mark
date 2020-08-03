@@ -1,15 +1,29 @@
-import Link from 'next/link';
-import Layout from '../components/Layout';
+import React from 'react';
+import { useQuery, gql } from '@apollo/client';
 
-const IndexPage = () => (
-  <Layout title="Home | Next.js + TypeScript Example">
-    <h1>Hello Next.js 👋</h1>
-    <p>
-      <Link href="/about">
-        <a>About</a>
-      </Link>
-    </p>
-  </Layout>
-);
+const query = gql`
+  query {
+    servers
+  }
+`;
+
+const IndexPage: React.FunctionComponent<{}> = (props) => {
+  const { loading, error, data } = useQuery(query);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) {
+    return (
+      <p>
+        {JSON.stringify({ server: process.env.GRAPHQL_SERVER })} Error... {JSON.stringify(error)}
+      </p>
+    );
+  }
+
+  return (
+    <div>
+      {JSON.stringify(props)} {data.servers} Index
+    </div>
+  );
+};
 
 export default IndexPage;
