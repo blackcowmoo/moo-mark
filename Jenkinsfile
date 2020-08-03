@@ -14,6 +14,7 @@ pipeline {
                   --set frontend.istio.host=${HELM_RELEASE_NAME}.kubernetes.micalgenus.com \
                   --set frontend.deployment.replicas=1 \
                   --set frontend.deployment.local.file=frontend.tar \
+                  --set frontend.deployment.gateway.url=http://${HELM_RELEASE_NAME}-gateway.kubernetes.micalgenus.com/graphql \
                   --set gateway.istio.enabled=true \
                   --set gateway.istio.host=${HELM_RELEASE_NAME}-gateway.kubernetes.micalgenus.com \
                   --set gateway.deployment.replicas=1 \

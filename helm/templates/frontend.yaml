@@ -26,7 +26,7 @@ spec:
         - name: frontend
         {{ if .Values.frontend.deployment.local.file }}
           image: blackcowmoo/moo-mark:frontend-dev
-          command: ["bash", "-c", "rm -rf /node && mkdir /node && cat /node-source/source.tar.base64 | base64 --decode > /source.tar && tar xf /source.tar -C /node && cd /node/frontend && yarn && yarn dev"]
+          command: ["bash", "-c", "rm -rf /node && mkdir /node && cat /node-source/source.tar.base64 | base64 --decode > /source.tar && tar xf /source.tar -C /node && cd /node/frontend && yarn && yarn build && yarn start"]
         {{ else }}
           {{ $defaultImage := printf "blackcowmoo/moo-mark:frontend-%s" .Chart.AppVersion }}
           image: {{ .Values.frontend.deployment.image | default $defaultImage | quote }}
@@ -34,11 +34,14 @@ spec:
         {{ end }}
           ports:
             - containerPort: 3000
+          env:
+            - name: GRAPHQL_SERVER
+              value: {{ .Values.frontend.deployment.gateway.url | quote }}
           livenessProbe:
             httpGet:
               path: /
               port: 3000
-            initialDelaySeconds: 20
+            initialDelaySeconds: 60
             periodSeconds: 3
     {{ if .Values.frontend.deployment.local.file }}
           volumeMounts:
