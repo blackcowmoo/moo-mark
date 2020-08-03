@@ -1,0 +1,59 @@
+name: github-actions/pull-request/backend/notification/build
+on:
+  pull_request:
+    branches:
+      - develop
+
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    env:
+      RABBITMQ_HOST: localhost
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: moomark
+      RABBITMQ_PASSWORD: moomark
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create RabbitMQ
+        run: |
+          docker run --name rabbitmq -d \
+            -p 5672:5672/tcp \
+            -p 61613:61613/tcp \
+            --health-cmd "rabbitmq-diagnostics -q ping" \
+            --health-start-period 1s \
+            --health-interval 1s \
+            rabbitmq:3 bash -c '(rabbitmqctl add_user ${RABBITMQ_USERNAME} ${RABBITMQ_PASSWORD} ;
+            rabbitmqctl set_user_tags ${RABBITMQ_USERNAME} administrator ;
+            rabbitmqctl set_permissions -p / ${RABBITMQ_USERNAME}  ".*" ".*" ".*" ;
+            ) & rabbitmq-plugins enable rabbitmq_stomp && rabbitmq-plugins enable rabbitmq_management && rabbitmq-server'
+
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - uses: actions/cache@v1
+        with:
+          path: ~/.gradle
+          key: backend-notification-java-${{ hashFiles('backend/notification/.gradle') }}
+          restore-keys: backend-notification-java
+
+      - name: Run build
+        working-directory: backend/notification
+        run: ./gradlew build -x checkstyleMain -x test -x checkstyleTest --stacktrace
+
+      - name: Run test
+        working-directory: backend/notification
+        run: ./gradlew test -x checkstyleMain -x checkstyleTest --stacktrace
+
+      - name: Update artifact
+        uses: actions/upload-artifact@v2
+        if: ${{ failure() }}
+        with:
+          name: notification-result
+          path: backend/notification/build/reports

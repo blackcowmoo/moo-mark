@@ -34,12 +34,24 @@ spec:
         {{ end }}
           ports:
             - containerPort: 7000
+          env:
+            - name: NODE_ENV
+          {{ if .Values.test.enabled }}
+              value: development 
+          {{ else }}
+              value: production
+          {{ end }}
+            - name: AUTH_SERVICE_HOST
+              value: backend-auth.{{ .Release.Namespace }}.svc.cluster.local
+            - name: AUTH_SERVICE_PORT
+              value: "80"
           livenessProbe:
             httpGet:
               path: /healthz
               port: 7000
             initialDelaySeconds: 20
             periodSeconds: 3
+    {{ if .Values.gateway.deployment.local.file }}
           volumeMounts:
           - name: gateway-source
             mountPath: /node-source
@@ -47,6 +59,7 @@ spec:
         - name: gateway-source
           configMap:
             name: gateway-source
+    {{ end }}
 
 {{- if .Values.gateway.service.enabled }}
 ---

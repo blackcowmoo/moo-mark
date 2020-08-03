@@ -2,7 +2,7 @@
   "name": "with-typescript",
   "version": "0.0.1",
   "scripts": {
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "dev": "next",
     "build": "next build",
     "start": "next start",
@@ -10,6 +10,9 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@apollo/client": "^3.1.1",
+    "@apollo/react-hooks": "^4.0.0",
+    "graphql": "^15.3.0",
     "next": "^9.4.4",
     "react": "^16.12.0",
     "react-dom": "^16.12.0"

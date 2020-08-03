@@ -38,3 +38,84 @@ spec:
       port: 6379
       targetPort: 6379
 {{- end -}}
+
+{{- if and .Values.test.enabled .Values.test.redis.istio.host }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-redis-commander
+  labels:
+    app: moomark
+    service: backend-redis-commander
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: moomark
+      service: backend-redis-commander
+  template:
+    metadata:
+      labels:
+        app: moomark
+        service: backend-redis-commander
+    spec:
+      containers:
+        - name: redis-commander
+          image: rediscommander/redis-commander
+          env:
+            - name: REDIS_HOSTS
+              value: backend-redis.{{ .Release.Namespace }}.svc.cluster.local
+          ports:
+            - name: redis-commander
+              containerPort: 8081
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-redis-commander
+  labels:
+    app: moomark
+    service: backend-redis-commander
+spec:
+  ports:
+  - name: http
+    port: 8081
+    targetPort: 8081
+  selector:
+    app: moomark
+    service: backend-redis-commander
+
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: redis-commander-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - {{ .Values.test.redis.istio.host }}
+
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: redis-commander
+spec:
+  hosts:
+    - {{ .Values.test.redis.istio.host }}
+  gateways:
+    - redis-commander-gateway
+  http:
+    - route:
+        - destination:
+            host: backend-redis-commander
+            port:
+              number: 8081
+{{- end -}}

@@ -19,7 +19,9 @@
     "target": "esnext",
     "baseUrl": "./",
     "paths": {
-      "@components/*": ["./components/*"]
+      "@/components/*": ["./components/*"],
+      "@/containers/*": ["./containers/*"],
+      "@/lib/*": ["./lib/*"]
     }
   },
   "exclude": ["node_modules"],

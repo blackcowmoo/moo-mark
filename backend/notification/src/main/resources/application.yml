@@ -1,0 +1,16 @@
+spring:
+  devtools:
+    livereload:
+      enabled:
+        true
+  
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+    
+logging:
+  level:
+    root:
+      DEBUG

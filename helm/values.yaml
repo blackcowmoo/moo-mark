@@ -1,5 +1,11 @@
 test:
-  enabled: true
+  enabled: false
+  redis:
+    istio:
+      host: ''
+  rabbitmq:
+    istio:
+      host: ''
 
 frontend:
   deployment:
@@ -7,6 +13,9 @@ frontend:
     # image:
     local:
       file: ''
+    gateway:
+      url: ''
+
   service:
     enabled: true
   istio:

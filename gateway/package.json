@@ -11,7 +11,7 @@
     "test": "NODE_ENV=test mocha -t 10000 -r ./src/test/utils/babel.js ./src/test/**/*.test.ts",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint --fix src/**/*.ts",
-    "type-check": "tsc --noEmit **/*.ts --esModuleInterop"
+    "type-check": "tsc -p tsconfig.json --noEmit --esModuleInterop"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.1",
@@ -34,6 +34,8 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
+    "apollo-server-express": "^2.15.1",
+    "axios": "^0.19.2",
     "express": "^4.17.1"
   }
 }
