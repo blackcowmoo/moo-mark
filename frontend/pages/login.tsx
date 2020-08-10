@@ -3,7 +3,7 @@ import { GoogleLogin } from 'react-google-login';
 import getConfig from 'next/config';
 
 const { publicRuntimeConfig } = getConfig();
-const { GOOGLE_OAUTH_CLIENT_ID } = publicRuntimeConfig;
+const { GOOGLE_OAUTH_CLIENT_ID, DEVELOPMENT_MODE } = publicRuntimeConfig;
 
 const LoginPage: React.FunctionComponent<{}> = () => {
   const onLoginGoogle = (result: any) => {
@@ -12,6 +12,7 @@ const LoginPage: React.FunctionComponent<{}> = () => {
 
   return (
     <>
+      <p>{{ DEVELOPMENT_MODE }}</p>
       <GoogleLogin
         clientId={GOOGLE_OAUTH_CLIENT_ID || ''}
         onSuccess={(result) => onLoginGoogle(result)}
@@ -21,4 +22,5 @@ const LoginPage: React.FunctionComponent<{}> = () => {
     </>
   );
 };
+
 export default LoginPage;
