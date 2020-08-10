@@ -62,5 +62,12 @@ export const WindowPopup: React.FunctionComponent<Props> = ({ url, name, specs, 
   // window.open(url, name, makeSpec(specs), replace);
   console.log(specs, makeSpec(specs));
 
-  return <p>{JSON.stringify({ url, name, specs, replace, spec: makeSpec(specs) })}</p>;
+  return (
+    <>
+      <p>{url}</p>
+      <p>{name}</p>
+      <p>{makeSpec(specs)}</p>
+      <p>{convertBoolean}</p>
+    </>
+  );
 };
