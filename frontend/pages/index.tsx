@@ -11,13 +11,7 @@ const IndexPage: React.FunctionComponent<{}> = (props) => {
   const { loading, error, data } = useQuery(query);
 
   if (loading) return <p>Loading...</p>;
-  if (error) {
-    return (
-      <p>
-        {JSON.stringify({ server: process.env.GRAPHQL_SERVER })} Error... {JSON.stringify(error)}
-      </p>
-    );
-  }
+  if (error) return <p>Error...</p>;
 
   return (
     <div>

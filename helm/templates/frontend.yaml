@@ -37,6 +37,8 @@ spec:
           env:
             - name: GRAPHQL_SERVER
               value: {{ .Values.frontend.deployment.gateway.url | quote }}
+            - name: GOOGLE_OAUTH_CLIENT_ID
+              value: {{ .Values.frontend.oauth.google.id | quote }}
           livenessProbe:
             httpGet:
               path: /
