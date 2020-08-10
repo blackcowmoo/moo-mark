@@ -15,6 +15,9 @@ frontend:
       file: ''
     gateway:
       url: ''
+  oauth:
+    google:
+      id: ''
 
   service:
     enabled: true
