@@ -67,7 +67,7 @@ export const WindowPopup: React.FunctionComponent<Props> = ({ url, name, specs, 
       <p>{url}</p>
       <p>{name}</p>
       <p>{makeSpec(specs)}</p>
-      <p>{convertBoolean(replace)}</p>
+      <p>{convertBoolean(replace || false)}</p>
     </>
   );
 };
