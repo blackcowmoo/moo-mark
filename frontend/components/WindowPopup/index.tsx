@@ -44,6 +44,8 @@ const makeSpec = (spec?: WindowSpec): string | undefined => {
 
     return specs.length ? specs.join(',') : undefined;
   }
+
+  return undefined;
 };
 
 interface Props {
@@ -55,9 +57,10 @@ interface Props {
 
 /**
  * @param name `'_blank'` | `'_parent'` | `'_self'` | `'_top'` | `string`
- **/
+ */
 export const WindowPopup: React.FunctionComponent<Props> = ({ url, name, specs, replace }) => {
   // window.open(url, name, makeSpec(specs), replace);
+  console.log(specs);
 
   return <p>{JSON.stringify({ url, name, specs, replace, spec: makeSpec(specs) })}</p>;
 };
