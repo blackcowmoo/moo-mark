@@ -72,7 +72,7 @@ pipeline {
           string(credentialsId: 'GOOGLE_CLIENT_SECRET_DEV', variable: 'GOOGLE_CLIENT_SECRET')
         ]) {
           echo "Install $HELM_RELEASE_NAME"
-          sh "helm install --name $HELM_RELEASE_NAME --namespace $HELM_RELEASE_NAME ./helm $HELM_OPTIONS --set backend.auth.oauth.google.id=${GOOGLE_CLIENT_ID} --set backend.auth.oauth.google.secret=${GOOGLE_CLIENT_SECRET}"
+          sh "helm install --name $HELM_RELEASE_NAME --namespace $HELM_RELEASE_NAME ./helm $HELM_OPTIONS --set backend.auth.oauth.google.id=${GOOGLE_CLIENT_ID} --set backend.auth.oauth.google.secret=${GOOGLE_CLIENT_SECRET} --set frontend.oauth.google.id=${GOOGLE_CLIENT_ID}"
         }
       }
     }
@@ -88,7 +88,7 @@ pipeline {
           string(credentialsId: 'GOOGLE_CLIENT_SECRET_DEV', variable: 'GOOGLE_CLIENT_SECRET')
         ]) {
           echo "Update $HELM_RELEASE_NAME"
-          sh "helm upgrade $HELM_RELEASE_NAME --namespace $HELM_RELEASE_NAME --recreate-pods ./helm $HELM_OPTIONS --set backend.auth.oauth.google.id=${GOOGLE_CLIENT_ID} --set backend.auth.oauth.google.secret=${GOOGLE_CLIENT_SECRET}"
+          sh "helm upgrade $HELM_RELEASE_NAME --namespace $HELM_RELEASE_NAME --recreate-pods ./helm $HELM_OPTIONS --set backend.auth.oauth.google.id=${GOOGLE_CLIENT_ID} --set backend.auth.oauth.google.secret=${GOOGLE_CLIENT_SECRET} --set frontend.oauth.google.id=${GOOGLE_CLIENT_ID}"
         }
       }
     }

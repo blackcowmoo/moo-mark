@@ -9,6 +9,8 @@ services:
     volumes:
       - ./frontend:/node
     command: bash -c 'yarn && yarn dev'
+    env_file:
+      - .env
     environment:
       - GRAPHQL_SERVER=http://gateway:7000/graphql
 

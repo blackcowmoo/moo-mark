@@ -7,12 +7,14 @@
     "docker-build:admin": "cd admin && docker build -t $DOCKER_ORGANIZATION/moo-mark:admin-$npm_package_version .",
     "docker-build:backend:auth": "cd backend/auth && docker build -t $DOCKER_ORGANIZATION/moo-mark:backend-auth-$npm_package_version .",
     "docker-build:gateway": "cd gateway && docker build -t $DOCKER_ORGANIZATION/moo-mark:gateway-$npm_package_version .",
-    "docker-build": "yarn docker-build:frontend&& yarn docker-build:admin && yarn docker-build:backend:auth && yarn docker-build:gateway",
+    "docker-build:helm-logger": "cd helm-logger && docker build -t $DOCKER_ORGANIZATION/moo-mark:helm-logger .",
+    "docker-build": "yarn docker-build:frontend&& yarn docker-build:admin && yarn docker-build:backend:auth && yarn docker-build:gateway && yarn docker-build:helm-logger",
     "docker-push:frontend": "docker push $DOCKER_ORGANIZATION/moo-mark:frontend-$npm_package_version",
     "docker-push:admin": "docker push $DOCKER_ORGANIZATION/moo-mark:admin-$npm_package_version",
     "docker-push:backend:auth": "docker push $DOCKER_ORGANIZATION/moo-mark:backend-auth-$npm_package_version",
     "docker-push:gateway": "docker push $DOCKER_ORGANIZATION/moo-mark:gateway-$npm_package_version",
-    "docker-push": "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && yarn docker-push:frontend && yarn docker-push:admin && yarn docker-push:backend:auth && yarn docker-push:gateway && docker logout"
+    "docker-push:helm-logger": "docker push $DOCKER_ORGANIZATION/moo-mark:helm-logger",
+    "docker-push": "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && yarn docker-push:frontend && yarn docker-push:admin && yarn docker-push:backend:auth && yarn docker-push:gateway && yarn docker-push:helm-logger && docker logout"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^3.6.1",

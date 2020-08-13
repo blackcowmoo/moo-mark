@@ -1,4 +1,4 @@
-name: github-actions/pull-request/frontend/build
+name: github-actions/pull-request/helm-logger/build
 on:
   pull_request:
     branches:
@@ -12,9 +12,6 @@ jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
-    # env:
-    #   GRAPHQL_SERVER: http://gateway:7000/graphql
-    #   GOOGLE_OAUTH_CLIENT_ID: 
 
     steps:
       - uses: actions/checkout@v2
@@ -23,32 +20,30 @@ jobs:
           node-version: 12
 
       - name: Cache node modules
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: ./node_modules
           key: node-${{ hashFiles('yarn.lock') }}
-          restore-keys: node-
 
       - name: Cache node modules
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
-          path: ./frontend/node_modules
-          key: frontend-node-${{ hashFiles('yarn.lock') }}
-          restore-keys: frontend-node-
+          path: ./helm-logger/node_modules
+          key: helm-logger-node-${{ hashFiles('yarn.lock') }}
 
       - name: Install global packages
         run: yarn
 
       - name: Install packages
-        working-directory: frontend
+        working-directory: helm-logger
         run: yarn
 
       - name: Run build
-        working-directory: frontend
+        working-directory: helm-logger
         run: yarn build
 
       - name: Run test
-        working-directory: frontend
+        working-directory: helm-logger
         run: yarn test
         env:
           CI: true
