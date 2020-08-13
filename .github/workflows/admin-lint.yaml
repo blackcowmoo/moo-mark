@@ -1,0 +1,47 @@
+name: github-actions/pull-request/admin/lint
+on:
+  pull_request:
+    branches:
+      - develop
+
+  push:
+    branches:
+      - develop
+
+jobs:
+  lint:
+    name: Lint and Type check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: ./node_modules
+          key: node-${{ hashFiles('yarn.lock') }}
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: ./admin/node_modules
+          key: admin-node-${{ hashFiles('yarn.lock') }}
+
+      - name: Install global packages
+        run: yarn
+
+      - name: Install packages
+        working-directory: admin
+        run: yarn
+
+      - name: Run syntax check
+        working-directory: admin
+        run: yarn type-check
+
+      - name: Run lint
+        working-directory: admin
+        run: yarn lint
