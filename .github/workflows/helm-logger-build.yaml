@@ -1,0 +1,49 @@
+name: github-actions/pull-request/helm-logger/build
+on:
+  pull_request:
+    branches:
+      - develop
+
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: ./node_modules
+          key: node-${{ hashFiles('yarn.lock') }}
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: ./helm-logger/node_modules
+          key: helm-logger-node-${{ hashFiles('yarn.lock') }}
+
+      - name: Install global packages
+        run: yarn
+
+      - name: Install packages
+        working-directory: helm-logger
+        run: yarn
+
+      - name: Run build
+        working-directory: helm-logger
+        run: yarn build
+
+      - name: Run test
+        working-directory: helm-logger
+        run: yarn test
+        env:
+          CI: true

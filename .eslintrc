@@ -16,6 +16,9 @@
     "import/prefer-default-export": ["off"],
     "no-restricted-syntax": ["off"],
     "no-param-reassign": ["off"],
-    "object-curly-newline": ["off"]
+    "object-curly-newline": ["off"],
+    "lines-between-class-members": ["off"],
+    "implicit-arrow-linebreak": ["off"],
+    "arrow-body-style": ["off"]
   }
 }
