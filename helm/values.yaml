@@ -6,6 +6,12 @@ test:
   rabbitmq:
     istio:
       host: ''
+  logger:
+    local:
+      file: ''
+    istio:
+      enabled: false
+      host: ''
 
 frontend:
   deployment:

@@ -1,19 +1,13 @@
-FROM node:12 as builder
+FROM node:12
+
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.17.0/bin/linux/amd64/kubectl && \
+    mv /kubectl /usr/local/bin/kubectl && \
+    chmod +x /usr/local/bin/kubectl
 
 COPY . /node
 WORKDIR /node
 
 RUN yarn && yarn build
-
-### Production
-FROM node:12-alpine
-
-COPY . /node
-COPY --from=builder /node/dist /node/dist
-
-WORKDIR /node
-
-RUN yarn --production
 
 EXPOSE 7000
 STOPSIGNAL SIGINT
