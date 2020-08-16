@@ -40,7 +40,7 @@ const Log: React.FC<LogProps> = (props: LogProps) => {
   return (
     <li>
       <span>{time}</span>
-      <p>{html}</p>
+      <p dangerouslySetInnerHTML={{ __html: html }} />
     </li>
   );
 };
