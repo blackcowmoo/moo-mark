@@ -1,6 +1,6 @@
-import { convert } from '@/utils/html';
 import express from 'express';
 import { getLog, getPod } from './kubectl';
+import { renderLogs } from './page';
 
 const app = express();
 app.use(express.json());
@@ -15,10 +15,7 @@ app.get('/:pod', async (req, res) => {
     const { pod } = req.params;
     const name = await getPod(pod);
     const logs = await getLog(name);
-
-    const style = '<style>body{background-color:#24292e}b{color:#959da5;font-weight:normal;}pre{margin:0;color:#f6f8fa}</style>';
-
-    res.send(style + logs.map(({ timestamp, text }) => `<pre><b>${timestamp.padEnd(30, ' ')}</b> ${convert.toHtml(text)}</pre>`).join(''));
+    res.send(renderLogs(logs));
   } catch (expressError) {
     res.status(500).send(`${expressError.message}:\n${JSON.stringify(expressError)}`);
   }

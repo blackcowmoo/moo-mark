@@ -3,6 +3,7 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
+    "jsx": "preserve",
     "paths": { "@/*": ["./*"] },
     "baseUrl": "./src"
   },

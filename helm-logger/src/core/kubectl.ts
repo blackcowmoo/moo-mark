@@ -9,11 +9,6 @@ export const getPod = async (pod: string): Promise<string> => {
   return items.map((item: any) => item.metadata.name).find((item: string) => podRegExp.test(item));
 };
 
-interface Log {
-  timestamp: string;
-  text: string;
-}
-
 export const getLog = async (name: string): Promise<Log[]> => {
   const logs = await kubectl(`logs --timestamps=true --tail=4000 ${name}`);
   return logs
