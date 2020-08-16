@@ -6,22 +6,26 @@ const convert = new Convert();
 
 const Style: React.FC<{}> = () => {
   return (
-    <style>{`
-    body {
-      margin: 0;
-      background-color: #24292e;
-    }
+    <style
+      dangerouslySetInnerHTML={{
+        __html: `
+          body {
+            margin: 0;
+            background-color: #24292e;
+          }
 
-    li > span {
-      color: #959da5;
-      font-weight: normal;
-      padding-right: 7.5px;
-    }
+          li > span {
+            color: #959da5;
+            font-weight: normal;
+            padding-right: 7.5px;
+          }
 
-    p {
-      margin: 0;
-      color: #f6f8fa;
-    }`}</style>
+          p {
+            margin: 0;
+            color: #f6f8fa;
+          }`,
+      }}
+    />
   );
 };
 
