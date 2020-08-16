@@ -22,7 +22,10 @@ pipeline {
                   --set backend.auth.istio.enabled=true \
                   --set backend.auth.istio.host=${HELM_RELEASE_NAME}-backend-auth.kubernetes.micalgenus.com \
                   --set backend.auth.deployment.replicas=1 \
-                  --set test.rabbitmq.istio.host=${HELM_RELEASE_NAME}-backend-rabbitmq.kubernetes.micalgenus.com"
+                  --set test.rabbitmq.istio.host=${HELM_RELEASE_NAME}-backend-rabbitmq.kubernetes.micalgenus.com \
+                  --set test.logger.local.file=helm-logger.tar \
+                  --set test.logger.istio.enabled=helm-logger.tar \
+                  --set test.logger.istio.host=${HELM_RELEASE_NAME}-logger.kubernetes.micalgenus.com"
   }
 
   stages {
@@ -39,6 +42,7 @@ pipeline {
       steps {
         sh "rm -rf $HELM_DIRECTORY/frontend.tar && tar cf $HELM_DIRECTORY/frontend.tar frontend"
         sh "rm -rf $HELM_DIRECTORY/gateway.tar && tar cf $HELM_DIRECTORY/gateway.tar gateway"
+        sh "rm -rf $HELM_DIRECTORY/helm-logger.tar && tar cf $HELM_DIRECTORY/helm-logger.tar helm-logger"
         sh "cd backend/auth && ./gradlew build -x checkstyleMain -x test && cd ../../ && rm -rf $BACKEND_AUTH_JAR && cp ./backend/auth/build/libs/*.jar $BACKEND_AUTH_JAR"
       }
     }
@@ -110,13 +114,17 @@ pipeline {
         BACKEND_REDIS_URL="http://${HELM_RELEASE_NAME}-redis.kubernetes.micalgenus.com/"
         BACKEND_RABBITMQ_URL="http://${HELM_RELEASE_NAME}-backend-rabbitmq.kubernetes.micalgenus.com/"
         BACKEND_AUTH_URL="http://${HELM_RELEASE_NAME}-backend-auth.kubernetes.micalgenus.com/"
+
+        LOGGER_URL="http://${HELM_RELEASE_NAME}-logger.kubernetes.micalgenus.com"
+
         for (comment in pullRequest.comments) {
           // Remove all comments by blackcowmooo
           if (comment.user == 'blackcowmooo')  {
             pullRequest.deleteComment(comment.id)
           }
         }
-        pullRequest.comment("Frontend: ${FRONTEND_URL}\nGateway: ${GATEWAY_URL}\nGateway.playground: ${GATEWAY_PLAYGROUND_URL}\nBackend.Redis: ${BACKEND_REDIS_URL}\nBackend.RabbitMQ: ${BACKEND_RABBITMQ_URL}\nBackend.Auth: ${BACKEND_AUTH_URL}\n")
+        pullRequest.comment("[Server]\nFrontend: ${FRONTEND_URL}\nGateway: ${GATEWAY_URL}\nGateway.playground: ${GATEWAY_PLAYGROUND_URL}\nBackend.Redis: ${BACKEND_REDIS_URL}\nBackend.RabbitMQ: ${BACKEND_RABBITMQ_URL}\nBackend.Auth: ${BACKEND_AUTH_URL}\n")
+        pullRequest.comment("[Log]\nFrontend: ${LOGGER_URL}/frontend\nGateway: ${LOGGER_URL}/gateway\nBackend.Auth: ${LOGGER_URL}/backend-auth")
       }
     }
 
