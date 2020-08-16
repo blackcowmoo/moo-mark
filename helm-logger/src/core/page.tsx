@@ -8,15 +8,19 @@ const Style: React.FC<{}> = () => {
   return (
     <style>{`
     body {
-      background-color:#24292e;
+      margin: 0;
+      background-color: #24292e;
     }
-    b {
-      color:#959da5;
-      font-weight:normal;
+
+    li > span {
+      color: #959da5;
+      font-weight: normal;
+      padding-right: 7.5px;
     }
-    pre {
-      margin:0;
-      color:#f6f8fa;
+
+    p {
+      margin: 0;
+      color: #f6f8fa;
     }`}</style>
   );
 };
@@ -30,10 +34,10 @@ const Log: React.FC<LogProps> = (props: LogProps) => {
   const html = convert.toHtml(text);
   const time = timestamp.padEnd(30, ' ');
   return (
-    <pre>
-      <b>{time}</b>
-      {html}
-    </pre>
+    <li>
+      <span>{time}</span>
+      <p>{html}</p>
+    </li>
   );
 };
 
@@ -41,9 +45,11 @@ export const renderLogs = (logs: Log[]): string => {
   return ReactDOMServer.renderToStaticMarkup(
     <>
       <Style />
-      {logs.map((log) => (
-        <Log key={log.timestamp} log={log} />
-      ))}
+      <ul>
+        {logs.map((log) => (
+          <Log key={log.timestamp} log={log} />
+        ))}
+      </ul>
     </>,
   );
 };
