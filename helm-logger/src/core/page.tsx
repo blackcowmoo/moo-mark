@@ -69,11 +69,10 @@ const Log: React.FC<LogProps> = (props: LogProps) => {
   const { index, log } = props;
   const { text, timestamp } = log;
   const html = convert.toHtml(text);
-  const time = timestamp.padEnd(30, ' ');
   return (
-    <li id={time}>
-      <a href={`#${time}`}>{index}</a>
-      <span className="timestamp">{time}</span>
+    <li id={timestamp}>
+      <a href={`#${timestamp}`}>{index}</a>
+      <span className="timestamp">{timestamp}</span>
       <p className="log" dangerouslySetInnerHTML={{ __html: html }} />
     </li>
   );
