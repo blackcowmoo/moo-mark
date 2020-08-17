@@ -10,19 +10,13 @@ const Style: React.FC<{}> = () => {
       dangerouslySetInnerHTML={{
         __html: `
           @font-face {
-            font-family: "San Francisco";
+            font-family: "SFMono-Regular";
             font-weight: 400;
-            src: url("https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-regular-webfont.woff");
-          }
-
-          @font-face {
-            font-family: "SF Text";
-            font-weight: 700;
-            src: url("https://sf.abarba.me/SF-UI-Text-Bold.otf");
+            src: url("https://sf.abarba.me/SFMono-Regular.otf");
           }
           
           body {
-            font-family: "San Francisco", -apple-system, system-ui, BlinkMacSystemFont;
+            font-family: SFMono-Regular, -apple-system, system-ui, BlinkMacSystemFont;
             margin: 0;
             background-color: #24292e;
           }
