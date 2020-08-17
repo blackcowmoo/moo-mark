@@ -60,14 +60,14 @@ interface Props {
  */
 export const WindowPopup: React.FunctionComponent<Props> = ({ url, name, specs, replace }) => {
   // window.open(url, name, makeSpec(specs), replace);
-  console.log(specs, makeSpec(specs));
+  console.log(specs, replace, makeSpec(specs));
 
   return (
     <>
       <p>{url}</p>
       <p>{name}</p>
-      <p>{makeSpec(specs)}</p>
-      <p>{convertBoolean(replace || false)}</p>
+      {/* <p>{makeSpec(specs)}</p>
+      <p>{convertBoolean(replace || false)}</p> */}
     </>
   );
 };
