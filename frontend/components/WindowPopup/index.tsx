@@ -61,22 +61,22 @@ interface Props {
 export const WindowPopup: React.FunctionComponent<Props> = ({ url, name, specs, replace }) => {
   console.log(specs, replace, makeSpec(specs));
 
-  let windowObject: Window | null = null;
+  // let windowObject: Window | null = null;
 
   const openWindow = () => {
-    windowObject = window.open(url, name, makeSpec(specs), replace);
+    // windowObject = window.open(url, name, makeSpec(specs), replace);
+    window.open(url, name, makeSpec(specs), replace);
   };
 
-  const closeWindow = () => {
-    if (windowObject) {
-      windowObject.close();
-    }
-  };
+  // const closeWindow = () => {
+  //   if (windowObject) {
+  //     windowObject.close();
+  //   }
+  // };
 
   return (
     <>
-      <button onClick={openWindow}>Open Popup</button>
-      <button onClick={closeWindow}>Close Popup</button>
+      <button onClick={openWindow}>OAuth login</button>
     </>
   );
 };
