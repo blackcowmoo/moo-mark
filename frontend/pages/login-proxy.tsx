@@ -1,19 +1,18 @@
 import React from 'react';
 import { GoogleLogin } from 'react-google-login';
 import getConfig from 'next/config';
-import { WindowPopup } from '@/components/WindowPopup';
 
 const { publicRuntimeConfig } = getConfig();
 const { GOOGLE_OAUTH_CLIENT_ID, DEVELOPMENT_MODE } = publicRuntimeConfig;
 
-const LoginPage: React.FunctionComponent<{}> = () => {
+const LoginProxyPage: React.FunctionComponent<{}> = () => {
   const onLoginGoogle = (result: any) => {
     console.log(result);
   };
 
-  return DEVELOPMENT_MODE ? (
-    <WindowPopup url="/login-proxy" name="login" specs={{ status: false, width: 400, height: 600 }} />
-  ) : (
+  console.log(DEVELOPMENT_MODE);
+
+  return (
     <>
       <GoogleLogin
         clientId={GOOGLE_OAUTH_CLIENT_ID || ''}
@@ -25,4 +24,4 @@ const LoginPage: React.FunctionComponent<{}> = () => {
   );
 };
 
-export default LoginPage;
+export default LoginProxyPage;
