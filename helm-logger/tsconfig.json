@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "paths": { "@/*": ["./*"] },
+    "baseUrl": "./src"
+  },
+  "exclude": ["node_modules"]
+}
