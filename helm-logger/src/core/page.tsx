@@ -32,7 +32,11 @@ const Style: React.FC<{}> = () => {
             padding-right: 7.5px;
           }
 
-          p {
+          li > a.timestamp {
+
+          }
+
+          li > p.log {
             margin: 0;
             color: #f6f8fa;
           }`,
@@ -54,8 +58,8 @@ const Log: React.FC<LogProps> = (props: LogProps) => {
   return (
     <li id={time}>
       <a href={`#${time}`}>{index}</a>
-      <span>{time}</span>
-      <p dangerouslySetInnerHTML={{ __html: html }} />
+      <span className="timestamp">{time}</span>
+      <p className="log" dangerouslySetInnerHTML={{ __html: html }} />
     </li>
   );
 };
@@ -66,7 +70,7 @@ export const renderLogs = (logs: Log[]): string => {
       <Style />
       <ul>
         {logs.map((log, index) => (
-          <Log key={log.timestamp} log={log} />
+          <Log key={log.timestamp} log={log} index={index + 1} />
         ))}
       </ul>
     </>,
