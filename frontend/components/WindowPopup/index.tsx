@@ -59,15 +59,13 @@ interface Props {
  * @param name `'_blank'` | `'_parent'` | `'_self'` | `'_top'` | `string`
  */
 export const WindowPopup: React.FunctionComponent<Props> = ({ url, name, specs, replace }) => {
-  // window.open(url, name, makeSpec(specs), replace);
   console.log(specs, replace, makeSpec(specs));
 
-  return (
-    <>
-      <p>{url}</p>
-      <p>{name}</p>
-      {/* <p>{makeSpec(specs)}</p>
-      <p>{convertBoolean(replace || false)}</p> */}
-    </>
-  );
+  let windowObject: Window | null = null;
+
+  const openWindow = () => {
+    windowObject = window.open(url, name, makeSpec(specs), replace);
+  };
+
+  return <button onClick={openWindow}>Open Popup</button>;
 };
