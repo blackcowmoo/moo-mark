@@ -4,11 +4,11 @@ import Layout from '../../components/Layout'
 
 export default class IndexPage extends PureComponent{
   render(){
-    return  <Layout title="Home | Next.js + TypeScript Example">
+    return  <Layout title="dashboard">
     <h1>Hello Next.js 👋</h1>
     <p>
       <Link href="/about">
-        <a>About</a>
+        <a>dashboard</a>
       </Link>
     </p>
   </Layout>
