@@ -14,7 +14,19 @@ const Style: React.FC<{}> = () => {
             background-color: #24292e;
           }
 
-          li > span {
+          ul {
+            list-style: none;
+            padding: 5px;
+            display: flex;
+            flex-direction: column;
+          }
+
+          li {
+            display: flex;
+            flex-direction: row;
+          }
+
+          li > a {
             color: #959da5;
             font-weight: normal;
             padding-right: 7.5px;
@@ -39,7 +51,7 @@ const Log: React.FC<LogProps> = (props: LogProps) => {
   const time = timestamp.padEnd(30, ' ');
   return (
     <li>
-      <span>{time}</span>
+      <a href={`#${time}`}>{time}</a>
       <p dangerouslySetInnerHTML={{ __html: html }} />
     </li>
   );
