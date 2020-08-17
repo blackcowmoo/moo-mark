@@ -67,5 +67,16 @@ export const WindowPopup: React.FunctionComponent<Props> = ({ url, name, specs, 
     windowObject = window.open(url, name, makeSpec(specs), replace);
   };
 
-  return <button onClick={openWindow}>Open Popup</button>;
+  const closeWindow = () => {
+    if (windowObject) {
+      windowObject.close();
+    }
+  };
+
+  return (
+    <>
+      <button onClick={openWindow}>Open Popup</button>
+      <button onClick={closeWindow}>Close Popup</button>
+    </>
+  );
 };
