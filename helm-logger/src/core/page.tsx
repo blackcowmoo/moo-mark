@@ -9,7 +9,14 @@ const Style: React.FC<{}> = () => {
     <style
       dangerouslySetInnerHTML={{
         __html: `
+          @font-face {
+            font-family: "San Francisco";
+            font-weight: 400;
+            src: url("https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-regular-webfont.woff");
+          }
+          
           body {
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
             margin: 0;
             background-color: #24292e;
           }
@@ -24,16 +31,24 @@ const Style: React.FC<{}> = () => {
           li {
             display: flex;
             flex-direction: row;
+            font-size: 12px;
           }
 
           li > a {
             color: #959da5;
             font-weight: normal;
             padding-right: 7.5px;
+            text-decoration: none;
+            width: 30px;
+            text-align: right;
+          }
+          
+          li > a:hover {
+            text-decoration: underline;
           }
 
-          li > a.timestamp {
-
+          li > span.timestamp {
+            color: #959da5;
           }
 
           li > p.log {
