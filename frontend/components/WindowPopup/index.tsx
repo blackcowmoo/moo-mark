@@ -1,4 +1,4 @@
-import React from 'react';
+Timport React from 'react';
 import _ from 'lodash';
 
 interface WindowSpec {
@@ -61,11 +61,14 @@ interface Props {
 export const WindowPopup: React.FunctionComponent<Props> = ({ url, name, specs, replace }) => {
   console.log(specs, replace, makeSpec(specs));
 
-  // let windowObject: Window | null = null;
+est  let windowObject: Window | null = null;
 
   const openWindow = () => {
-    // windowObject = window.open(url, name, makeSpec(specs), replace);
-    window.open(url, name, makeSpec(specs), replace);
+    windowObject = window.open(url, name, makeSpec(specs), replace);
+    if (windowObject) {
+      console.log(windowObject);
+      windowObject.postMessage('test', window.location.href);
+    }
   };
 
   // const closeWindow = () => {
