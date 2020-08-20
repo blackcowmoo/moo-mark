@@ -61,7 +61,7 @@ interface Props {
 export const WindowPopup: React.FunctionComponent<Props> = ({ url, name, specs, replace }) => {
   console.log(specs, replace, makeSpec(specs));
 
-est  let windowObject: Window | null = null;
+  let windowObject: Window | null = null;
 
   const openWindow = () => {
     windowObject = window.open(url, name, makeSpec(specs), replace);
