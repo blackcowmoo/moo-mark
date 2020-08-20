@@ -4,7 +4,7 @@ import Head from 'next/head';
 import React from 'react';
 
 // const DISABLE_LAYOUT_PAGES = ['/login'];
-const DISABLE_LAYOUT_PAGES: string[] = [];
+const DISABLE_LAYOUT_PAGES: string[] = ['/login-proxy'];
 
 export default class NextAppLayout extends App {
   public static async getInitialProps({ Component, ctx }: AppContext): Promise<AppInitialProps> {
