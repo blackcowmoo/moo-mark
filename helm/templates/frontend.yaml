@@ -35,6 +35,10 @@ spec:
           ports:
             - containerPort: 3000
           env:
+          {{ if .Values.test.enabled }}
+            - name: DEVELOPMENT_MODE
+              value: "true"
+          {{ end }}
             - name: GRAPHQL_SERVER
               value: {{ .Values.frontend.deployment.gateway.url | quote }}
             - name: GOOGLE_OAUTH_CLIENT_ID
