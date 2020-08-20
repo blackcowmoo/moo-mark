@@ -16,7 +16,10 @@ const LoginProxyPage: React.FunctionComponent<{}> = () => {
     // event.data is "hi there yourself!  the secret response is: rheeeeet!"
   };
 
-  window.addEventListener('message', receiveMessage, false);
+  if (window) {
+    console.log('load window');
+    window.addEventListener('message', receiveMessage, false);
+  }
 
   const onLoginGoogle = (result: GoogleLoginResponse | GoogleLoginResponseOffline) => {
     console.log(result);
