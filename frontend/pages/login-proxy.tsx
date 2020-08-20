@@ -16,7 +16,7 @@ const LoginProxyPage: React.FunctionComponent<{}> = () => {
     // event.data is "hi there yourself!  the secret response is: rheeeeet!"
   };
 
-  if (window) {
+  if (process.browser) {
     console.log('load window');
     window.addEventListener('message', receiveMessage, false);
   }
