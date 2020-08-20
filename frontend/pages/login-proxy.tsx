@@ -9,7 +9,7 @@ const LoginProxyPage: React.FunctionComponent<{}> = () => {
   const receiveMessage = (event: Event) => {
     // Do we trust the sender of this message?  (might be
     // different from what we originally opened, for example).
-    console.log(event);
+    console.log('receiveMessage', event);
     // if (event.origin !== 'http://example.com') return;
 
     // event.source is popup
