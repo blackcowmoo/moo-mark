@@ -54,6 +54,9 @@ const Style: React.FC<{}> = () => {
           li > p.log {
             margin: 0;
             color: #f6f8fa;
+            left: 10px;
+            position: relative;
+            width: 1000px;
           }`,
       }}
     />
