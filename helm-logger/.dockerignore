@@ -9,3 +9,4 @@ Dockerfile*
 .eslintrc
 jest.config.js
 yarn-error.log
+src/test/*
