@@ -59,6 +59,7 @@ backend:
       enabled: true
     istio:
       enabled: false
+      # host: ''
     mysql:
       hostname: localhost
       port: 3306
@@ -69,3 +70,21 @@ backend:
       google:
         id: ''
         secret: ''
+
+  notification:
+    deployment:
+      replicas: 3
+      # image:
+      file:
+        name: ''
+        url: ''
+    service:
+      enabled: true
+    istio:
+      enabled: false
+      # host: ''
+    rabbitmq:
+      host: localhost
+      port: 5672
+      username: moomark
+      password: moomark
