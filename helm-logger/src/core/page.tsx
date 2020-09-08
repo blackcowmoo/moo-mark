@@ -48,7 +48,15 @@ const Style: React.FC<{}> = () => {
           }
 
           li > span.timestamp {
+            width: 130px;
             color: #959da5;
+            white-space: nowrap;
+            overflow: hidden;
+          }
+
+          li > span.timestamp:hover {
+            white-space: initial;
+            width: 200px;
           }
 
           li > p.log {
