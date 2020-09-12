@@ -31,15 +31,15 @@ const Style: React.FC<{}> = () => {
           li {
             display: flex;
             flex-direction: row;
-            font-size: 12px;
+            font-size: 0.8rem;
           }
 
           li > a {
             color: #959da5;
             font-weight: normal;
-            padding-right: 7.5px;
+            padding-right: 1em;
             text-decoration: none;
-            width: 30px;
+            width: 0.2em;
             text-align: right;
           }
           
@@ -48,23 +48,24 @@ const Style: React.FC<{}> = () => {
           }
 
           li > span.timestamp {
-            width: 130px;
+            width: 10em;
             color: #959da5;
+            position: relative;
             white-space: nowrap;
             overflow: hidden;
           }
 
           li > span.timestamp:hover {
             white-space: initial;
-            width: 200px;
+            width: 16em;
           }
 
           li > p.log {
             margin: 0;
             color: #f6f8fa;
-            left: 10px;
+            left: 1em;
             position: relative;
-            width: 1000px;
+            width: 50em;
           }`,
       }}
     />
