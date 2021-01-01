@@ -1,0 +1,131 @@
+{{ if .Values.test.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: logger
+rules:
+- apiGroups: [""]
+  resources: ["pods", "pods/log"]
+  verbs: ["get", "list", "watch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: logger
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: {{ .Release.namespace | quote }}
+roleRef:
+  kind: Role
+  name: logger
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helm-logger-deployment
+  labels:
+    app: moomark
+    service: helm-logger
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 100%
+      maxUnavailable: 100%
+  selector:
+    matchLabels:
+      app: moomark
+      service: helm-logger
+  template:
+    metadata:
+      labels:
+        app: moomark
+        service: helm-logger
+    spec:
+      containers:
+        - name: helm-logger
+          image: blackcowmoo/moo-mark:helm-logger
+          imagePullPolicy: Always
+          command: ["bash", "-c", "rm -rf /node && mkdir /node && cat /node-source/source.tar.base64 | base64 --decode > /source.tar && tar xf /source.tar -C /node && cd /node/helm-logger && yarn && yarn dev"]
+          ports:
+            - containerPort: 7000
+          env:
+            - name: NODE_ENV
+              value: development
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 7000
+            initialDelaySeconds: 20
+            periodSeconds: 3
+          volumeMounts:
+          - name: helm-logger-source
+            mountPath: /node-source
+      volumes:
+        - name: helm-logger-source
+          configMap:
+            name: helm-logger-source
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: helm-logger
+spec:
+  selector:
+    app: moomark
+    service: helm-logger
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 7000
+{{ end }}
+
+{{- if and .Values.test.logger.istio.enabled .Values.test.logger.istio.host }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: helm-logger-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - {{ .Values.test.logger.istio.host }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: helm-logger
+spec:
+  hosts:
+  - {{ .Values.test.logger.istio.host }}
+  gateways:
+  - helm-logger-gateway
+  http:
+  - route:
+    - destination:
+        host: helm-logger
+        port:
+          number: 80
+{{- end -}}
+
+{{- if .Values.test.logger.local.file }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: helm-logger-source
+data:
+  source.tar.base64: {{ .Files.Get .Values.test.logger.local.file | b64enc }}
+{{- end -}}

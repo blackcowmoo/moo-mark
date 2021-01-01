@@ -1,10 +1,11 @@
 pipeline {
-  agent any 
+  agent any
 
   environment {
     PROJECT_NAME="moomark-${BRANCH_NAME}"
     DEV_HOSTING_SERVER="https://dev-hosting.micalgenus.com"
     BACKEND_AUTH_JAR="backend.auth.jar"
+    BACKEND_NOTIFICATION_JAR="backend.notification.jar"
     HELM_DIRECTORY="helm"
     HELM_RELEASE_NAME="${PROJECT_NAME}".replaceAll("PR", "pr")
     HELM_RELEASE_EXIST=sh(script: '[ -z $(helm ls ' + "${HELM_RELEASE_NAME}" + ' -a -q) ] && echo "false" || echo "true"', , returnStdout: true).trim()
@@ -22,7 +23,13 @@ pipeline {
                   --set backend.auth.istio.enabled=true \
                   --set backend.auth.istio.host=${HELM_RELEASE_NAME}-backend-auth.kubernetes.micalgenus.com \
                   --set backend.auth.deployment.replicas=1 \
-                  --set test.rabbitmq.istio.host=${HELM_RELEASE_NAME}-backend-rabbitmq.kubernetes.micalgenus.com"
+                  --set backend.notification.istio.enabled=true \
+                  --set backend.notification.istio.host=${HELM_RELEASE_NAME}-backend-notification.kubernetes.micalgenus.com \
+                  --set backend.notification.deployment.replicas=1 \
+                  --set test.rabbitmq.istio.host=${HELM_RELEASE_NAME}-backend-rabbitmq.kubernetes.micalgenus.com \
+                  --set test.logger.local.file=helm-logger.tar \
+                  --set test.logger.istio.enabled=helm-logger.tar \
+                  --set test.logger.istio.host=${HELM_RELEASE_NAME}-logger.kubernetes.micalgenus.com"
   }
 
   stages {
@@ -39,7 +46,9 @@ pipeline {
       steps {
         sh "rm -rf $HELM_DIRECTORY/frontend.tar && tar cf $HELM_DIRECTORY/frontend.tar frontend"
         sh "rm -rf $HELM_DIRECTORY/gateway.tar && tar cf $HELM_DIRECTORY/gateway.tar gateway"
+        sh "rm -rf $HELM_DIRECTORY/helm-logger.tar && tar cf $HELM_DIRECTORY/helm-logger.tar helm-logger"
         sh "cd backend/auth && ./gradlew build -x checkstyleMain -x test && cd ../../ && rm -rf $BACKEND_AUTH_JAR && cp ./backend/auth/build/libs/*.jar $BACKEND_AUTH_JAR"
+        sh "cd backend/notification && ./gradlew build -x checkstyleMain -x test && cd ../../ && rm -rf $BACKEND_NOTIFICATION_JAR && cp ./backend/notification/build/libs/*.jar $BACKEND_NOTIFICATION_JAR"
       }
     }
 
@@ -48,7 +57,9 @@ pipeline {
         script {
           env.BACKEND_AUTH_JAR_NAMESPACE = sh(script: "curl -XPOST ${DEV_HOSTING_SERVER}/upload/file -F 'file=@${BACKEND_AUTH_JAR}' | jq '.namespace'", , returnStdout: true).trim().replaceAll("\"", "")
           env.BACKEND_AUTH_JAR_URL = "${DEV_HOSTING_SERVER}/download/${BACKEND_AUTH_JAR_NAMESPACE}/${BACKEND_AUTH_JAR}"
-          env.HELM_OPTIONS = "${HELM_DEFAULT_OPTIONS} --set backend.auth.deployment.file.name=${BACKEND_AUTH_JAR} --set backend.auth.deployment.file.url=${BACKEND_AUTH_JAR_URL}"
+          env.BACKEND_NOTIFICATION_JAR_NAMESPACE = sh(script: "curl -XPOST ${DEV_HOSTING_SERVER}/upload/file -F 'file=@${BACKEND_NOTIFICATION_JAR}' | jq '.namespace'", , returnStdout: true).trim().replaceAll("\"", "")
+          env.BACKEND_NOTIFICATION_JAR_URL = "${DEV_HOSTING_SERVER}/download/${BACKEND_NOTIFICATION_JAR_NAMESPACE}/${BACKEND_NOTIFICATION_JAR}"
+          env.HELM_OPTIONS = "${HELM_DEFAULT_OPTIONS} --set backend.auth.deployment.file.name=${BACKEND_AUTH_JAR} --set backend.auth.deployment.file.url=${BACKEND_AUTH_JAR_URL} --set backend.notification.deployment.file.name=${BACKEND_NOTIFICATION_JAR} --set backend.notification.deployment.file.url=${BACKEND_NOTIFICATION_JAR_URL}"
         }
       }
     }
@@ -110,13 +121,18 @@ pipeline {
         BACKEND_REDIS_URL="http://${HELM_RELEASE_NAME}-redis.kubernetes.micalgenus.com/"
         BACKEND_RABBITMQ_URL="http://${HELM_RELEASE_NAME}-backend-rabbitmq.kubernetes.micalgenus.com/"
         BACKEND_AUTH_URL="http://${HELM_RELEASE_NAME}-backend-auth.kubernetes.micalgenus.com/"
+
+        LOGGER_URL="http://${HELM_RELEASE_NAME}-logger.kubernetes.micalgenus.com"
+
+        BACKEND_NOTIFICATION_URL="http://${HELM_RELEASE_NAME}-backend-notification.kubernetes.micalgenus.com/"
         for (comment in pullRequest.comments) {
           // Remove all comments by blackcowmooo
           if (comment.user == 'blackcowmooo')  {
             pullRequest.deleteComment(comment.id)
           }
         }
-        pullRequest.comment("Frontend: ${FRONTEND_URL}\nGateway: ${GATEWAY_URL}\nGateway.playground: ${GATEWAY_PLAYGROUND_URL}\nBackend.Redis: ${BACKEND_REDIS_URL}\nBackend.RabbitMQ: ${BACKEND_RABBITMQ_URL}\nBackend.Auth: ${BACKEND_AUTH_URL}\n")
+        pullRequest.comment("[Server]\nFrontend: ${FRONTEND_URL}\nGateway: ${GATEWAY_URL}\nGateway.playground: ${GATEWAY_PLAYGROUND_URL}\nBackend.Redis: ${BACKEND_REDIS_URL}\nBackend.RabbitMQ: ${BACKEND_RABBITMQ_URL}\nBackend.Auth: ${BACKEND_AUTH_URL}\nBackend.Notification: ${BACKEND_NOTIFICATION_URL}")
+        pullRequest.comment("[Log]\nFrontend: ${LOGGER_URL}/frontend\nGateway: ${LOGGER_URL}/gateway\nBackend.Auth: ${LOGGER_URL}/backend-auth\nBackend.Notification: ${LOGGER_URL}/backend-notification")
       }
     }
 

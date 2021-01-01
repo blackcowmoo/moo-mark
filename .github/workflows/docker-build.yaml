@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        directory: ['frontend', 'gateway', 'admin', 'helm-logger', 'backend/auth']
+        directory: ['frontend', 'gateway', 'admin', 'helm-logger', 'backend/auth', 'backend/notification']
 
     steps:
       - uses: actions/checkout@v2
