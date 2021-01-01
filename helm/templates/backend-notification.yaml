@@ -1,0 +1,111 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-notification-deployment
+  labels:
+    app: moomark
+    service: backend-notification
+spec:
+  replicas: {{ .Values.backend.notification.deployment.replicas }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 100%
+      maxUnavailable: 100%
+  selector:
+    matchLabels:
+      app: moomark
+      service: backend-notification
+  template:
+    metadata:
+      labels:
+        app: moomark
+        service: backend-notification
+    spec:
+      containers:
+        - name: backend-notification
+        {{ if .Values.backend.notification.deployment.file.url }}
+          image: blackcowmoo/moo-mark:backend-auth-dev
+          command: ["bash", "-c", "curl $JAR_FILE_URL -o $JAR_FILE_NAME -s && java -jar $JAR_FILE_NAME"]
+        {{ else }}
+          {{ $defaultImage := printf "blackcowmoo/moo-mark:backend-notification-%s" .Chart.AppVersion }}
+          image: {{ .Values.backend.notification.deployment.image | default $defaultImage | quote }}
+          imagePullPolicy: Always
+        {{ end }}
+          ports:
+            - containerPort: 8080
+          env:
+          {{ if .Values.test.enabled }}
+            - name: RABBITMQ_HOST
+              value: backend-rabbitmq.{{ .Release.Namespace }}.svc.cluster.local
+          {{ else }}
+            - name: RABBITMQ_HOST
+              value: {{ .Values.backend.notification.rabbitmq.hostname | quote }}
+          {{ end }}
+            - name: RABBITMQ_PORT
+              value: {{ .Values.backend.notification.rabbitmq.port | quote }}
+            - name: RABBITMQ_USERNAME
+              value: {{ .Values.backend.notification.rabbitmq.username | quote }}
+            - name: RABBITMQ_PASSWORD
+              value: {{ .Values.backend.notification.rabbitmq.password | quote }}
+            - name: JAR_FILE_NAME
+              value: {{ .Values.backend.notification.deployment.file.name | quote }}
+            - name: JAR_FILE_URL
+              value: {{ .Values.backend.notification.deployment.file.url | quote }}
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 300
+            periodSeconds: 5
+
+{{- if .Values.backend.notification.service.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-notification
+spec:
+  selector:
+    app: moomark
+    service: backend-notification
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+{{- end -}}
+
+{{- if and .Values.backend.notification.istio.enabled .Values.backend.notification.istio.host }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: backend-notification-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - {{ .Values.backend.notification.istio.host }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: backend-notification
+spec:
+  hosts:
+  - {{ .Values.backend.notification.istio.host }}
+  gateways:
+  - backend-notification-gateway
+  http:
+  - route:
+    - destination:
+        host: backend-notification
+        port:
+          number: 80
+{{- end -}}

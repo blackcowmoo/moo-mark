@@ -1,15 +1,8 @@
-import axios from 'axios';
-import { makeExecutableSchema, gql } from 'apollo-server-express';
 import { endpoints } from '@/core/config';
+import axios from 'axios';
+import * as auth from './auth';
 
-const typeDefs = gql`
-  type Query {
-    healthz: String!
-    servers: String!
-  }
-`;
-
-const resolvers = {
+const rootResolvers = {
   Query: {
     healthz: () => 'OK',
     servers: async () => {
@@ -37,4 +30,4 @@ const resolvers = {
   },
 };
 
-export default makeExecutableSchema({ typeDefs, resolvers });
+export const resolvers = [rootResolvers, auth];
