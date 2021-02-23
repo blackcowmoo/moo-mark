@@ -1,19 +1,12 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import Link from 'next/link';
-import Head from 'next/head';
 
 type Props = {
-  children?: ReactNode
-  title?: string
-}
+  children?: ReactNode;
+};
 
-const Layout = ({ children, title = 'This is the default title' }: Props) => (
+const Layout: React.FC = ({ children }: Props) => (
   <div>
-    <Head>
-      <title>{title}</title>
-      <meta charSet="utf-8" />
-      <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-    </Head>
     <header>
       <nav>
         <Link href="/">
@@ -33,7 +26,10 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => (
     {children}
     <footer>
       <hr />
-      <span>I `&apos;` m here to stay (Footer)</span>
+      mooMark |{' '}
+      <a href="https://github.com/blackcowmoo/moo-mark" rel="noreferrer noopener" target="_blank">
+        github
+      </a>
     </footer>
   </div>
 );
