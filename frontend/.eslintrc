@@ -9,6 +9,7 @@
   ],
   "settings": {
     "import/resolver": {
+      "babel-module": {},
       "alias": {
         "map": [
           [
